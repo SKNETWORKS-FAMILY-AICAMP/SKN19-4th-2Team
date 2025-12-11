@@ -153,8 +153,26 @@
 
 <body>
 
-    <!-- 네비게이션 바 -->
-    {% include 'layout/navber.html' %}
+    <!-- 상단 헤더 -->
+    <header class="header">
+        <div class="header-left">
+            <!-- 로고 이미지 쓰고 싶으면 아래 img 주석 해제해서 static 경로에 맞게 변경 -->
+            <!-- <img src="{% static 'img/pai_logo.png' %}" alt="P.ai 로고" style="height:40px;"> -->
+            <div>
+                <div class="logo-text-main">Pai</div>
+                <div class="logo-text-sub">PATENT AI</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <form action="{% url 'chat:chat_interface' %}">
+                <button type="submit" class="header-btn">채팅하기</button>
+            </form>
+            <form action="{% url 'account:logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="header-btn">로그아웃</button>
+            </form>
+        </div>
+    </header>
 
     <!-- 메인 내용 -->
     <div class="page-wrapper">
@@ -204,6 +222,11 @@
         </div>
     </div>
 
+    <!-- 탈퇴 폼 (보이지 않음) -->
+    <form id="delete-form" method="POST" action="{% url 'account:withdraw_final' %}">
+        {% csrf_token %}
+    </form>
+
     <!-- 탈퇴 확인 모달 -->
     <div id="confirm-modal" class="modal-overlay">
         <div class="modal-box">
@@ -228,8 +251,9 @@
         const confirmModal = document.getElementById('confirm-modal');
         const confirmBtn = document.getElementById('confirm-btn');
         const cancelBtn = document.getElementById('cancel-btn');
+        const deleteForm = document.getElementById('delete-form');
 
-        // 회원탈퇴하기 버튼 → 모달 열기
+        // 모달 열기
         openModalBtn.addEventListener('click', function () {
             confirmModal.style.display = 'flex';
         });
@@ -239,17 +263,16 @@
             confirmModal.style.display = 'none';
         });
 
-        // 바깥 검은 영역 클릭 → 모달 닫기
+        // 바깥 영역 클릭 → 모달 닫기
         confirmModal.addEventListener('click', function (event) {
             if (event.target === confirmModal) {
                 confirmModal.style.display = 'none';
             }
         });
 
-        // 모달 안 탈퇴하기 → 메인 페이지로 이동
+        // 진짜 탈퇴하기 → 폼 제출
         confirmBtn.addEventListener('click', function () {
-            alert('회원탈퇴가 완료되었습니다.');
-            location.href = "{% url 'main:index' %}";
+            deleteForm.submit();  // POST 요청 전송
         });
     </script>
 
