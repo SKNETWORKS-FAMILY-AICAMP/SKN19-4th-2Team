@@ -1,11 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, logout, login as auth_login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
+from .forms import SignupForm, LoginForm, ProfileUpdateForm
+
 # from django.contrib.auth import logout as auth_logout
 
 from django.http import HttpResponse
 
 from .forms import SignupForm, LoginForm
+
+# 수정 부분: signup(), login()
 
 
 # 회원가입
@@ -45,32 +52,63 @@ def login(request):
     return render(request, "account/login.html", {"form": form})
 
 
+# 로그아웃 (버튼 추가 후)
+# def logout(request):
+#     auth_logout(request)
+#     return redirect("")
+
+
+def chat(request):
+    return render(request, "account/chat.html")
+
 
 def withdraw(request):
     return render(request, "account/withdraw.html")
 
 
 @login_required
-def withdraw_final(request):
-    if request.method == "POST":
-        user = request.user
-        logout(request)        # 세션 로그아웃
-        user.delete()          # DB에서 삭제
-        return redirect("main:index")  # 너희 홈페이지 URL name
-    return redirect("account:mypage")  # POST가 아니면 마이페이지로 돌려보내기
-
-
 def myinfo(request):
+    """
+    마이페이지:
+    - 현재 로그인한 사용자 정보 표시
+    - 별명(닉네임) 변경
+    - 비밀번호 변경
+    """
+    user = request.user
+    success_message = ""
+
+    # 기본 폼 생성 (GET일 때 사용)
+    profile_form = ProfileUpdateForm(user=user)
+    password_form = PasswordChangeForm(user)
+
+    if request.method == "POST":
+        # 어떤 버튼이 눌렸는지 name으로 구분
+        if "profile_submit" in request.POST:
+            # 별명 수정 폼
+            profile_form = ProfileUpdateForm(request.POST, user=user)
+            if profile_form.is_valid():
+                profile_form.save()
+                success_message = "별명이 성공적으로 변경되었습니다."
+
+        elif "password_submit" in request.POST:
+            # 비밀번호 변경 폼
+            password_form = PasswordChangeForm(user, request.POST)
+            if password_form.is_valid():
+                changed_user = password_form.save()
+                # 비밀번호를 바꿔도 로그인 풀리지 않게 세션 유지
+                update_session_auth_hash(request, changed_user)
+                success_message = "비밀번호가 성공적으로 변경되었습니다."
+
     context = {
-        "user_id": "FantAstIc5",
-        "password": "@@FantAstIc5",
-        "nickname": "판타스틱오",
-        "message": "변경이 완료되었습니다.",
+        "user_obj": user,
+        "profile_form": profile_form,
+        "password_form": password_form,
+        "success_message": success_message,
     }
     return render(request, "account/myinfo.html", context)
 
 
-@login_required
+
 def logout_view(request):
     """
     로그아웃 처리:
