@@ -51,19 +51,28 @@ def login(request):
 
     return render(request, "account/login.html", {"form": form})
 
-
-# 로그아웃 (버튼 추가 후)
-# def logout(request):
-#     auth_logout(request)
-#     return redirect("")
-
-
-def chat(request):
-    return render(request, "account/chat.html")
-
-
 def withdraw(request):
     return render(request, "account/withdraw.html")
+
+@login_required
+def withdraw_final(request):
+    if request.method == "POST":
+        user = request.user
+        logout(request)        # 세션 로그아웃
+        user.delete()          # DB에서 삭제
+        return redirect("main:index") 
+    return redirect("account:mypage")  # POST가 아니면 마이페이지로
+
+@login_required
+def logout_view(request):
+    """
+    로그아웃 처리:
+    1. 현재 사용자의 세션 데이터를 삭제합니다 (DB의 django_session 테이블에서 제거).
+    2. 브라우저의 sessionid 쿠키도 무효화됩니다.
+    3. 메인 페이지로 이동합니다.
+    """
+    logout(request)
+    return redirect("main:index")  # 메인 페이지로 이동
 
 
 @login_required
