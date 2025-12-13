@@ -1,0 +1,15 @@
+{% extends 'layout/account_base.html' %}
+
+{% block title %}Pai | 회원탈퇴 완료{% endblock %}
+
+{% block content %}
+<script>
+    document.body.classList.add('success-page');
+</script>
+
+<div class="success-message">
+    <h2 class="success-title">👋 회원탈퇴 완료</h2>
+    <p class="success-text">그동안 Pai를 이용해주셔서 감사했습니다.<br>언제든지 다시 돌아오실 수 있습니다.</p>
+    <a href="{% url 'main:index' %}" class="success-btn">메인으로 돌아가기</a>
+</div>
+{% endblock %}

@@ -1,70 +1,15 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ko">
+{% extends 'layout/account_base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원가입 완료</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: white;
-        }
+{% block title %}Pai | 회원가입 완료{% endblock %}
 
-        .success-container {
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            text-align: center;
-        }
+{% block content %}
+<script>
+    document.body.classList.add('success-page');
+</script>
 
-        h2 {
-            color: #445A85;
-        }
-
-        p {
-            color: #445A85;
-            margin-bottom: 30px;
-        }
-
-        .login-button {
-            padding: 12px 40px;
-            background-color: #445A85;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .login-button:hover {
-            background-color: #273E6A;
-        }
-
-        .logo {
-            display: block;
-            margin: 0 auto 20px;
-            max-width: 150px;
-            height: auto;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="success-container">
-        <img src="{% static '/images/logo_image.png' %}" alt="로고" class="logo">
-        <h2>회원가입 완료!</h2>
-        <p>{{ username }}님, 환영합니다!</p>
-        <a href="{% url 'account:login' %}" class="login-button">로그인</a>
-    </div>
-</body>
-
-</html>
+<div class="success-message">
+    <h2 class="success-title">🎉 회원가입 완료!</h2>
+    <p class="success-text">{{ username }}님, 환영합니다!<br>이제 Pai와 함께 특허 검색을 시작해보세요.</p>
+    <a href="{% url 'account:login' %}" class="success-btn">로그인하기</a>
+</div>
+{% endblock %}

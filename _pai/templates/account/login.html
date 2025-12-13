@@ -6,39 +6,40 @@
 <!-- 로그인 Form -->
 <form method="POST" action="{% url 'account:login' %}">
     {% csrf_token %}
-    <!-- 로그인 실패(아이디/비번 불일치 등) -->
-    {% if form.non_field_errors %}
-        <div style="color:red; font-size:13px; margin-bottom:10px;">
-            올바른 ID와 Password를 입력하십시오.<br>
-            대문자와 소문자를 구별합니다.
-        </div>
-    {% endif %}
+    <!-- 로그인 실패 메시지 영역 (항상 공간 확보) -->
+    <div style="min-height: 40px; margin-bottom: 8px;">
+        {% if form.non_field_errors %}
+            <div class="error-message" style="text-align: center;">
+                올바른 ID와 Password를 입력하십시오.<br>
+                대문자와 소문자를 구별합니다.
+            </div>
+        {% endif %}
+    </div>
 
     <!-- ID 입력 -->
     <div>
         <input type="text"
             name="{{ form.username.name }}"
-            class="input-box"
+            class="input-box{% if form.username.errors or form.non_field_errors %} error{% endif %}"
             placeholder="ID를 입력하세요."
             value="{{ form.username.value|default_if_none:'' }}">
 
         {% if form.username.errors %}
-            <div style="color:red; font-size:13px;">
+            <div class="error-message">
                 {{ form.username.errors.0 }}
             </div>
         {% endif %}
     </div>
 
-
     <!-- Password 입력 -->
     <div>
         <input type="password"
             name="{{ form.password.name }}"
-            class="input-box"
+            class="input-box{% if form.password.errors or form.non_field_errors %} error{% endif %}"
             placeholder="Password를 입력하세요.">
 
         {% if form.password.errors %}
-            <div style="color:red; font-size:13px;">
+            <div class="error-message">
                 {{ form.password.errors.0 }}
             </div>
         {% endif %}
