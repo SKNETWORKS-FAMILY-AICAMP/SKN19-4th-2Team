@@ -8,7 +8,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, START, END, MessagesState
-from langgraph.checkpoint.memory import MemorySaver
+# from langgraph.checkpoint.memory import MemorySaver
 
 from .SYSTEM_PROMPT import SYSTEM_PROMPT
 
@@ -72,9 +72,9 @@ def get_graph_agent():
     workflow.add_edge("tools", "agent")
 
     # 메모리 체크포인터
-    memory = MemorySaver()
+    # memory = MemorySaver()
 
-    return workflow.compile(checkpointer=memory)
+    return workflow.compile()
 
 
 # ========================================================

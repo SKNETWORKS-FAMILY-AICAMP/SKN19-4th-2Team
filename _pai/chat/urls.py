@@ -20,4 +20,6 @@ urlpatterns = [
         views.rename_history_api,
         name="rename_history_api",
     ),
+    # [추가] 즐겨찾기 토글 API
+    path("api/history/toggle_pin/", views.toggle_pin_api, name="toggle_pin_api"),
 ]

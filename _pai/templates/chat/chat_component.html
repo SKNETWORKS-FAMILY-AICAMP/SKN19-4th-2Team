@@ -12,7 +12,7 @@
         <div id="row-{{ msg.chat_id }}"
             class="chat-row {% if msg.type == 'HUMAN' %}user-row{% else %}ai-row{% endif %}">
             {% if msg.type == 'HUMAN' %}
-            <button class="delete-btn" onclick="deleteMessage('{{ msg.chat_id }}')" title="대화 삭제">🗑️</button>
+            <button class="delete-btn" onclick="deleteMessage('{{ msg.chat_id }}')" title="대화 삭제">✕</button>
             {% else %}
             <img src="{% static 'images/chat_pai.png' %}" alt="Pai Avatar" class="ai-avatar">
             {% endif %}
@@ -34,38 +34,38 @@
         <div class="chat-row ai-row">
             <img src="{% static 'images/chat_pai.png' %}" alt="Pai Avatar" class="ai-avatar">
             <div class="chat-message ai-message">
-            안녕하세요! 
-            <b>
-                {% if user.is_authenticated %}
+                안녕하세요!
+                <b>
+                    {% if user.is_authenticated %}
                     {{ user.last_name }}{{ user.first_name }}님
-                {% else %}
+                    {% else %}
                     방문자님
-                {% endif %}
-            </b> 👋<br>
-            저는 <b>Pai(Patent AI)</b>, 
-            <b>컴퓨터 비전 분야 특허에 특화된 AI 어시스턴트</b>입니다.<br>
-            사용자의 아이디어를 분석하고, 내부 특허·IPC DB를 활용하여<br>
-            <b>유사 특허 검색 · IPC 코드 추천 · IPC 코드 설명 · 기본 특허 실무 안내</b>를 도와드려요.<br>
-            <br>
-            <b>이런 걸 도와드릴 수 있어요</b><br>
-            - 발명 아이디어를 바탕으로 유사한 공개·등록 특허를 찾아 핵심만 요약해 드리기<br>
-            - 아이디어에 어울릴 만한 국제특허분류(IPC) 코드 후보를 추천해 드리기<br>
-            - 이미 알고 있는 IPC 코드(예: G06T 7/00, H04N 5/232)의 의미와 상위·하위 구조 설명<br>
-            - 특정 출원번호(예: 10-2023-0112930)의 대표 청구항을 모아서 요약 정리<br>
-            - 컴퓨터 비전 관련 특허 실무 개념을 이해하기 쉽게 풀어서 설명<br>
-            <br>
-            <b>예시로 이렇게 물어보실 수 있어요</b><br>
-            - "차량 전방 카메라로 보행자를 인식해서 자동 제동하는 시스템인데, 비슷한 특허를 찾아줘."<br>
-            - "이 아이디어에 어울리는 IPC 코드를 추천해줘."<br>
-            - "IPC 코드 G06T 7/00이 어떤 기술을 다루는지 설명해줘."<br>
-            - "출원번호 1020230019980 특허의 주요 청구항들을 요약해줘."<br>
-            <br><b>참고해주세요</b><br>
-            - 현재 DB는 주로 <b>컴퓨터 비전 관련 특허</b>를 중심으로 되어 있어서,<br>
-            화학·의료·농기계 등 다른 분야 특허는 충분하지 않을 수 있어요.<br>
-            - 실제 출원, 권리범위 판단처럼 법적 책임이 필요한 결정은<br>
-            반드시 변리사의 검토와 함께 진행해 주세요.<br>
-            <br>
-            무엇을 도와드릴까요?
+                    {% endif %}
+                </b> 👋<br>
+                저는 <b>Pai(Patent AI)</b>,
+                <b>컴퓨터 비전 분야 특허에 특화된 AI 어시스턴트</b>입니다.<br>
+                사용자의 아이디어를 분석하고, 내부 특허·IPC DB를 활용하여<br>
+                <b>유사 특허 검색 · IPC 코드 추천 · IPC 코드 설명 · 기본 특허 실무 안내</b>를 도와드려요.<br>
+                <br>
+                <b>이런 걸 도와드릴 수 있어요</b><br>
+                - 발명 아이디어를 바탕으로 유사한 공개·등록 특허를 찾아 핵심만 요약해 드리기<br>
+                - 아이디어에 어울릴 만한 국제특허분류(IPC) 코드 후보를 추천해 드리기<br>
+                - 이미 알고 있는 IPC 코드(예: G06T 7/00, H04N 5/232)의 의미와 상위·하위 구조 설명<br>
+                - 특정 출원번호(예: 10-2023-0112930)의 대표 청구항을 모아서 요약 정리<br>
+                - 컴퓨터 비전 관련 특허 실무 개념을 이해하기 쉽게 풀어서 설명<br>
+                <br>
+                <b>예시로 이렇게 물어보실 수 있어요</b><br>
+                - "차량 전방 카메라로 보행자를 인식해서 자동 제동하는 시스템인데, 비슷한 특허를 찾아줘."<br>
+                - "이 아이디어에 어울리는 IPC 코드를 추천해줘."<br>
+                - "IPC 코드 G06T 7/00이 어떤 기술을 다루는지 설명해줘."<br>
+                - "출원번호 1020230019980 특허의 주요 청구항들을 요약해줘."<br>
+                <br><b>참고해주세요</b><br>
+                - 현재 DB는 주로 <b>컴퓨터 비전 관련 특허</b>를 중심으로 되어 있어서,<br>
+                화학·의료·농기계 등 다른 분야 특허는 충분하지 않을 수 있어요.<br>
+                - 실제 출원, 권리범위 판단처럼 법적 책임이 필요한 결정은<br>
+                반드시 변리사의 검토와 함께 진행해 주세요.<br>
+                <br>
+                무엇을 도와드릴까요?
             </div>
         </div>
 
@@ -75,12 +75,12 @@
     <form id="chat-input-area" onsubmit="sendMessage(event)">
         <div class="view-mode-wrapper">
             <button type="button" id="view-mode-btn" title="보기 모드 변경">
-                </button>
+            </button>
             <div id="view-mode-menu" class="view-mode-menu">
-                </div>
+            </div>
         </div>
 
-        <input type="text" id="user-input" placeholder="질문을 입력하세요..." autocomplete="off">
+        <textarea id="user-input" placeholder="질문을 입력하세요..." rows="1"></textarea>
         <button type="submit" id="send-btn">전송</button>
     </form>
 </div>
@@ -115,9 +115,18 @@
         scroll-behavior: smooth;
     }
 
-    #chat-history::-webkit-scrollbar { width: 6px; }
-    #chat-history::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 3px; }
-    #chat-history::-webkit-scrollbar-track { background-color: transparent; }
+    #chat-history::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #chat-history::-webkit-scrollbar-thumb {
+        background-color: #d1d5db;
+        border-radius: 3px;
+    }
+
+    #chat-history::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
 
     /* ========================================
      2. 채팅 메시지 (말풍선)
@@ -129,8 +138,14 @@
         align-items: flex-start;
         gap: 12px;
     }
-    .user-row { justify-content: flex-end; }
-    .ai-row { justify-content: flex-start; }
+
+    .user-row {
+        justify-content: flex-end;
+    }
+
+    .ai-row {
+        justify-content: flex-start;
+    }
 
     .ai-avatar {
         width: 36px;
@@ -141,7 +156,7 @@
         object-fit: cover;
         border: 1px solid #f1f3f5;
         background-color: #fff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
     }
 
     .chat-message {
@@ -152,7 +167,7 @@
         line-height: 1.6;
         word-wrap: break-word;
         position: relative;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     }
 
     .user-message {
@@ -166,30 +181,68 @@
         color: #1f2937;
         border: 1px solid #e5e7eb;
         border-bottom-left-radius: 4px;
-        min-width: 320px;
+        transition: all 0.3s ease;
+
+        /* [핵심] 85% 제한을 풀고 무조건 꽉 차게 설정 */
+        width: 85%;
+        max-width: 85%;
+        box-sizing: border-box;
+        /* 패딩 포함 크기 계산 */
+    }
+
+    /* [추가] 카드 모드일 때 적용할 스타일: 가로로 꽉 차게 */
+    .ai-message.full-width {
+        width: 85%;
+        max-width: 85%;
     }
 
     .delete-btn {
-        opacity: 0; transition: all 0.2s;
-        background: none; border: none; cursor: pointer; 
-        font-size: 14px; padding: 4px; color: #adb5bd;
+        opacity: 0;
+        transition: all 0.2s;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 4px;
+        color: #adb5bd;
     }
-    .delete-btn:hover { color: #fa5252; transform: scale(1.1); }
-    .chat-row:hover .delete-btn { opacity: 1; }
+
+    .delete-btn:hover {
+        color: #fa5252;
+        transform: scale(1.1);
+    }
+
+    .chat-row:hover .delete-btn {
+        opacity: 1;
+    }
 
     .tool-status {
-        font-size: 12px; color: #6b7280;
+        font-size: 12px;
+        color: #6b7280;
         background-color: #f3f4f6;
-        padding: 6px 12px; border-radius: 20px;
-        display: inline-flex; align-items: center; gap: 8px;
-        margin-left: 48px; margin-bottom: 4px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: 48px;
+        margin-bottom: 4px;
     }
+
     .spinner {
-        width: 10px; height: 10px; border: 2px solid #d1d5db;
-        border-top-color: #4a5c8d; border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        border: 2px solid #d1d5db;
+        border-top-color: #4a5c8d;
+        border-radius: 50%;
         animation: spin 0.8s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
 
     /* ========================================
      3. 입력 영역 & 보기 모드 버튼
@@ -201,129 +254,316 @@
         border-top: 1px solid #f1f3f5;
         border-bottom-left-radius: 16px;
         border-bottom-right-radius: 16px;
-        display: flex; gap: 12px; align-items: center;
+        display: flex;
+        gap: 12px;
+        /* [수정] 입력창이 길어지면 버튼을 아래쪽에 고정 */
+        align-items: flex-end;
         position: relative;
     }
 
-    .view-mode-wrapper { position: relative; display: flex; align-items: center; }
-    
+    .view-mode-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        /* [수정] 아이콘도 아래쪽에 고정 */
+        height: 44px;
+    }
+
     #view-mode-btn {
-        width: 40px; height: 40px;
+        width: 40px;
+        height: 40px;
         border-radius: 10px;
         border: 1px solid #e5e7eb;
         background-color: #fff;
         color: #4b5563;
         cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         transition: all 0.2s ease;
     }
-    #view-mode-btn:hover { background-color: #f9fafb; border-color: #d1d5db; color: #111827; }
-    #view-mode-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    #view-mode-btn:hover {
+        background-color: #f9fafb;
+        border-color: #d1d5db;
+        color: #111827;
+    }
+
+    #view-mode-btn svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+    }
 
     .view-mode-menu {
-        position: absolute; bottom: 50px; left: 0;
+        position: absolute;
+        bottom: 50px;
+        left: 0;
         width: 180px;
         background: white;
         border: 1px solid #e5e7eb;
         border-radius: 12px;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        display: none; flex-direction: column; overflow: hidden; z-index: 50;
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 50;
         padding: 4px;
         animation: slideUp 0.2s ease-out;
     }
-    .view-mode-menu.show { display: flex; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .view-mode-menu.show {
+        display: flex;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
     .mode-item {
-        padding: 10px 12px; font-size: 13px; font-weight: 500;
-        color: #374151; cursor: pointer; border-radius: 8px;
-        display: flex; align-items: center; gap: 10px; transition: background 0.1s;
+        padding: 10px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background 0.1s;
     }
-    .mode-item:hover { background-color: #f3f4f6; }
-    .mode-item.active { background-color: #eff6ff; color: #2563eb; }
-    .mode-item svg { width: 16px; height: 16px; stroke-width: 2; }
 
-    #user-input {
-        flex: 1; padding: 12px 16px;
-        border: 1px solid #e5e7eb; border-radius: 10px;
-        font-size: 15px; outline: none; transition: all 0.2s;
-        background-color: #f9fafb;
+    .mode-item:hover {
+        background-color: #f3f4f6;
     }
-    #user-input:focus { border-color: #4a5c8d; background-color: #fff; box-shadow: 0 0 0 3px rgba(74, 92, 141, 0.1); }
+
+    .mode-item.active {
+        background-color: #eff6ff;
+        color: #2563eb;
+    }
+
+    .mode-item svg {
+        width: 16px;
+        height: 16px;
+        stroke-width: 2;
+    }
+
+    /* [수정] input -> textarea 스타일로 변경 */
+    #user-input {
+        flex: 1;
+        padding: 12px 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        /* 둥근 모서리 유지 */
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.2s, background-color 0.2s;
+        background-color: #f9fafb;
+
+        /* textarea 전용 속성 */
+        resize: none;
+        /* 사용자 임의 조절 금지 */
+        overflow-y: hidden;
+        /* 내용 넘치기 전엔 스크롤 숨김 */
+        min-height: 46px;
+        /* 기본 높이 (한 줄일 때) */
+        max-height: 150px;
+        /* 너무 길어지면 스크롤 생기게 제한 */
+        line-height: 1.5;
+        /* 줄 간격 */
+        font-family: inherit;
+        /* 폰트 상속 */
+    }
+
+    #user-input:focus {
+        border-color: #4a5c8d;
+        background-color: #fff;
+        box-shadow: 0 0 0 3px rgba(74, 92, 141, 0.1);
+    }
 
     #send-btn {
-        height: 40px; padding: 0 20px;
-        background-color: #4a5c8d; color: #fff;
-        border: none; border-radius: 10px;
-        font-weight: 600; font-size: 14px; cursor: pointer;
+        height: 40px;
+        /* 버튼 높이 고정 */
+        padding: 0 20px;
+        background-color: #4a5c8d;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
         transition: background 0.2s;
+        margin-bottom: 3px;
+        /* 입력창 테두리와 시각적 높이 맞춤 */
+        flex-shrink: 0;
+        /* 버튼 찌그러짐 방지 */
     }
-    #send-btn:hover { background-color: #3b4c6e; }
-    #send-btn:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+
+    #send-btn:hover {
+        background-color: #3b4c6e;
+    }
+
+    #send-btn:disabled {
+        background-color: #cbd5e1;
+        cursor: not-allowed;
+    }
 
     /* ========================================
      4. 마크다운 스타일
      ========================================
     */
-    .ai-message h1, .ai-message h2, .ai-message h3 { margin-top: 16px; color: #111827; }
-    .ai-message h1 { font-size: 1.25em; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px; }
-    .ai-message p { margin-bottom: 12px; line-height: 1.6; color: #374151; }
-    .ai-message code { background: #f3f4f6; color: #e11d48; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-family: 'Menlo', monospace; }
-    .ai-message pre { background: #1e293b; color: #f8fafc; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 12px 0; }
-    .ai-message pre code { background: transparent; color: inherit; padding: 0; }
-    .ai-message ul { padding-left: 20px; color: #374151; }
+    .ai-message h1,
+    .ai-message h2,
+    .ai-message h3 {
+        margin-top: 16px;
+        color: #111827;
+    }
+
+    .ai-message h1 {
+        font-size: 1.25em;
+        border-bottom: 2px solid #f3f4f6;
+        padding-bottom: 8px;
+    }
+
+    .ai-message p {
+        margin-bottom: 12px;
+        line-height: 1.6;
+        color: #374151;
+    }
+
+    .ai-message code {
+        background: #f3f4f6;
+        color: #e11d48;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        font-family: 'Menlo', monospace;
+    }
+
+    .ai-message pre {
+        background: #1e293b;
+        color: #f8fafc;
+        padding: 12px;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 12px 0;
+    }
+
+    .ai-message pre code {
+        background: transparent;
+        color: inherit;
+        padding: 0;
+    }
+
+    .ai-message ul {
+        padding-left: 20px;
+        color: #374151;
+    }
 
     /* ========================================
      5. 카드 뷰 스타일 (Capsule/Pill Footer)
      ========================================
     */
     .card-container {
-        display: flex; flex-direction: column; height: 100%;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        /* 높이도 부모에 맞춤 */
     }
-    
+
+    /* ========================================
+     카드 내용 영역 (높이 제한 해제)
+     ========================================
+    */
     .card-content {
         flex: 1;
         animation: fadeIn 0.3s ease;
-        min-height: 80px; 
-        padding-bottom: 4px;
+
+        /* [수정] 높이 고정 삭제! 내용만큼 늘어납니다. */
+        /* height: 400px;  <-- 삭제 */
+        /* overflow-y: auto; <-- 삭제 */
+
+        min-height: 150px;
+        /* 너무 작아지지 않게 최소 높이만 유지 */
+        padding: 8px 12px;
+        /* 여백을 조금 더 줘서 시원하게 */
+
+        /* 텍스트 가독성을 위한 정렬 */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
     }
 
     /* [수정] 카드 하단바: 완전한 알약 형태 */
     .card-footer {
         margin-top: 0px;
-        background-color: #ffffff; /* 회색 배경 */
-        
+        background-color: #ffffff;
+        /* 회색 배경 */
+
         /* [핵심] 둥근 정도를 50px로 늘려 완벽한 반원을 만듭니다 */
-        border-radius: 50px; 
-        
+        border-radius: 50px;
+
         /* [핵심] 패딩을 늘려 컨텐츠가 모서리에 붙지 않게 합니다 */
-        padding: 8px 16px; 
-        border-top:none;
-        display: flex; justify-content: space-between; align-items: center;
+        padding: 8px 16px;
+        border-top: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .card-nav-btn {
-        width: 28px; height: 28px;
-        border-radius: 50%; 
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
         border: 1px solid #e9ecef;
-        background: #fff; 
+        background: #fff;
         color: #4b5563;
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer; transition: all 0.2s;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
-    .card-nav-btn:hover:not(:disabled) { 
-        background-color: #fff; border-color: #adb5bd; 
-        color: #111827; transform: scale(1.05); 
+
+    .card-nav-btn:hover:not(:disabled) {
+        background-color: #fff;
+        border-color: #adb5bd;
+        color: #111827;
+        transform: scale(1.05);
     }
-    .card-nav-btn:disabled { 
-        opacity: 0.4; cursor: not-allowed; background-color: #f1f3f5; border-color: transparent; box-shadow: none;
+
+    .card-nav-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        background-color: #f1f3f5;
+        border-color: transparent;
+        box-shadow: none;
     }
-    .card-nav-btn svg { width: 14px; height: 14px; stroke-width: 2.5; }
+
+    .card-nav-btn svg {
+        width: 14px;
+        height: 14px;
+        stroke-width: 2.5;
+    }
 
     .page-indicator {
-        font-size: 11px; font-weight: 600; color: #868e96;
-        background: transparent; padding: 0 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #868e96;
+        background: transparent;
+        padding: 0 8px;
         user-select: none;
     }
 
@@ -332,47 +572,71 @@
      ========================================
     */
     .expandable-container {
-        position: relative; overflow: hidden;
+        position: relative;
+        overflow: hidden;
         transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
         border-radius: 8px;
     }
-    
+
     .expandable-container.collapsed {
-        max-height: 140px; 
+        max-height: 140px;
     }
 
     .gradient-overlay {
-        position: absolute; bottom: 0; left: 0; width: 100%; height: 80px;
-        background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1) 65%);
-        display: flex; align-items: flex-end; justify-content: center;
-        padding-bottom: 0; 
-        pointer-events: none; opacity: 0; transition: opacity 0.3s;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 80px;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 65%);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 0;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
     }
-    .expandable-container.collapsed .gradient-overlay { opacity: 1; pointer-events: auto; }
+
+    .expandable-container.collapsed .gradient-overlay {
+        opacity: 1;
+        pointer-events: auto;
+    }
 
     .collapse-footer {
-        display: none; justify-content: center; 
-        margin-top: 12px; padding-top: 12px; 
+        display: none;
+        justify-content: center;
+        margin-top: 12px;
+        padding-top: 12px;
         border-top: 1px dashed #e9ecef;
         background-color: transparent;
     }
-    .expandable-container:not(.collapsed) .collapse-footer { display: flex; }
+
+    .expandable-container:not(.collapsed) .collapse-footer {
+        display: flex;
+    }
 
     .expand-pill-btn {
         background-color: white;
         border: 1px solid #e9ecef;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        padding: 5px 14px; border-radius: 100px;
-        color: #4a5c8d; font-size: 12px; font-weight: 600;
-        cursor: pointer; display: flex; align-items: center; gap: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        padding: 5px 14px;
+        border-radius: 100px;
+        color: #4a5c8d;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
         transition: all 0.2s;
     }
-    
+
     .gradient-overlay .expand-pill-btn {
         margin-bottom: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
-    
+
     .collapse-footer .expand-pill-btn {
         background-color: #f8f9fa;
         border: 1px solid #dee2e6;
@@ -380,12 +644,27 @@
         box-shadow: none;
     }
 
-    .expand-pill-btn:hover { 
-        transform: translateY(-1px); color: #3b4c6e; border-color: #ced4da;
+    .expand-pill-btn:hover {
+        transform: translateY(-1px);
+        color: #3b4c6e;
+        border-color: #ced4da;
     }
-    .expand-pill-btn svg { width: 10px; height: 10px; stroke-width: 3; }
 
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .expand-pill-btn svg {
+        width: 10px;
+        height: 10px;
+        stroke-width: 3;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
 </style>
 
 <script>
@@ -423,8 +702,13 @@
             <div class="mode-item" onclick="changeViewMode('full')">${ICONS.full} 전체 보기</div>
             <div class="mode-item" onclick="changeViewMode('accordion')">${ICONS.expand} 접어서 보기</div>
         `;
+
+        if (typeof sortHistoryList === 'function') {
+            sortHistoryList('custom');
+        }
+
         updateMenuState(currentViewMode);
-        refreshAllMessages(); 
+        refreshAllMessages();
         forceScrollToBottom();
     });
 
@@ -464,15 +748,21 @@
     // 3. 렌더링 함수
     // ============================================================
     function renderContentByMode(targetDiv, markdownText) {
-        targetDiv.innerHTML = ''; 
+        targetDiv.innerHTML = '';
+
+        // 이 메시지를 감싸고 있는 말풍선(.ai-message)을 찾습니다.
+        const messageBubble = targetDiv.closest('.ai-message');
 
         // 1. Full Mode
         if (currentViewMode === 'full') {
+            if (messageBubble) messageBubble.classList.remove('full-width'); // 넓이 원상복구
             targetDiv.innerHTML = DOMPurify.sanitize(marked.parse(markdownText));
         }
-        
+
         // 2. Expand Mode (Clean Style)
         else if (currentViewMode === 'accordion') {
+            if (messageBubble) messageBubble.classList.remove('full-width'); // 넓이 원상복구
+
             const htmlContent = DOMPurify.sanitize(marked.parse(markdownText));
             const container = document.createElement('div');
             container.className = 'expandable-container';
@@ -483,7 +773,7 @@
             const overlay = document.createElement('div');
             overlay.className = 'gradient-overlay';
             overlay.innerHTML = `<button class="expand-pill-btn">펼치기 ${ICONS.chevronDown}</button>`;
-            
+
             const footer = document.createElement('div');
             footer.className = 'collapse-footer';
             footer.innerHTML = `<button class="expand-pill-btn">접기 ${ICONS.chevronUp}</button>`;
@@ -503,11 +793,27 @@
             expandBtn.onclick = (e) => { e.stopPropagation(); container.classList.remove('collapsed'); };
             collapseBtn.onclick = (e) => { e.stopPropagation(); container.classList.add('collapsed'); };
         }
-        
+
         // 3. Card Mode (Capsule Footer)
         else {
             const parts = markdownText.split(/\n\s*---\s*\n/);
-            if (parts.length <= 1) { targetDiv.innerHTML = DOMPurify.sanitize(marked.parse(markdownText)); return; }
+
+            // ============================================================
+            // [수정] 카드가 1장뿐이면 -> 그냥 일반 텍스트 모드로 표시 (카드 UI X)
+            // ============================================================
+            if (parts.length <= 1) {
+                // 1. 꽉 찬 너비(full-width) 해제 -> 내용만큼만 말풍선 차지
+                if (messageBubble) messageBubble.classList.remove('full-width');
+
+                // 2. 그냥 마크다운 렌더링하고 끝내기
+                targetDiv.innerHTML = DOMPurify.sanitize(marked.parse(markdownText));
+                return;
+            }
+
+            // ============================================================
+            // [핵심] 카드가 2장 이상일 때만 -> 가로로 꽉 채우고 카드 UI 생성
+            // ============================================================
+            if (messageBubble) messageBubble.classList.add('full-width');
 
             const pages = parts.map(part => DOMPurify.sanitize(marked.parse(part)));
             let currentPage = 0;
@@ -527,6 +833,8 @@
             nextBtn.className = 'card-nav-btn'; nextBtn.innerHTML = ICONS.arrowRight;
             const indicator = document.createElement('span');
             indicator.className = 'page-indicator'; indicator.innerText = `1 / ${pages.length}`;
+
+            // (2장 이상이므로 nextBtn 활성화 로직은 그대로 둠)
 
             const updateState = () => {
                 contentDiv.innerHTML = pages[currentPage];
@@ -548,6 +856,40 @@
     }
 
     // ============================================================
+    // [추가] Textarea 자동 높이 조절 & 엔터키 처리
+    // ============================================================
+
+    // 1. 높이 자동 조절 함수
+    function adjustHeight() {
+        userInput.style.height = 'auto'; // 높이 초기화
+        userInput.style.height = userInput.scrollHeight + 'px'; // 내용만큼 늘리기
+
+        // 최대 높이 넘어가면 스크롤 켜기
+        if (userInput.scrollHeight > 150) {
+            userInput.style.overflowY = "auto";
+        } else {
+            userInput.style.overflowY = "hidden";
+        }
+    }
+
+    // 2. 입력할 때마다 높이 조절
+    userInput.addEventListener('input', adjustHeight);
+
+    // 3. 키보드 이벤트 (Enter 처리)
+    userInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            // Shift + Enter는 줄바꿈 (기본 동작 허용)
+            if (!e.shiftKey) {
+                // 한글 입력 중(isComposing)일 때 전송되는 버그 방지
+                if (e.isComposing) return;
+
+                e.preventDefault(); // 줄바꿈 막고
+                sendMessage(e);     // 전송 함수 호출
+            }
+        }
+    });
+
+    // ============================================================
     // 4. 메시지 전송 및 기본 로직
     // ============================================================
     async function sendMessage(event) {
@@ -557,7 +899,13 @@
         if (!text || !historyId) return;
 
         const currentUserRow = appendMessage('user', text);
-        userInput.value = ''; userInput.disabled = true; sendBtn.disabled = true;
+
+        // 입력창 초기화 및 높이 리셋
+        userInput.value = '';
+        userInput.style.height = 'auto';
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+
         forceScrollToBottom();
 
         try {
@@ -570,8 +918,13 @@
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
+
             let currentAiBubble = null;
+            let currentRawData = null; // [추가] 원본 저장소 참조 변수
             let currentContent = "";
+
+            // [최적화] 렌더링 대기 중인지 체크하는 플래그
+            let renderPending = false;
 
             while (true) {
                 const { done, value } = await reader.read();
@@ -583,28 +936,62 @@
                     if (!line.trim()) continue;
                     try {
                         const data = JSON.parse(line);
+
                         if (data.type === 'user_message_id') {
                             if (currentUserRow) {
                                 currentUserRow.id = 'row-' + data.chat_id;
                                 addDeleteButton(currentUserRow, data.chat_id);
                             }
-                        } else if (data.type === 'token') {
-                            removeToolStatus();
-                            if (!currentAiBubble) currentAiBubble = createMessageBubble('ai');
-                            currentContent += data.content;
-                            currentAiBubble.innerHTML = DOMPurify.sanitize(marked.parse(currentContent));
-                        } else if (data.type === 'tool_call') createToolStatus(data.tool_name);
-                        else if (data.type === 'history_title') {
-                            if (typeof updateHistoryTitle === 'function') updateHistoryTitle(data.history_id, data.title);
                         }
-                        scrollToBottom();
-                    } catch (e) {}
+                        else if (data.type === 'token') {
+                            removeToolStatus();
+
+                            if (!currentAiBubble) {
+                                currentAiBubble = createMessageBubble('ai');
+                                const row = currentAiBubble.closest('.chat-row');
+                                if (row) currentRawData = row.querySelector('.raw-data');
+                            }
+
+                            // 1. 데이터는 실시간으로 계속 쌓아둡니다. (누락 방지)
+                            currentContent += data.content;
+
+                            // 2. [최적화 핵심] 화면 그리기는 '브라우저가 한가할 때' 한 번만 요청합니다.
+                            if (!renderPending) {
+                                renderPending = true;
+                                requestAnimationFrame(() => {
+                                    if (currentAiBubble) {
+                                        currentAiBubble.innerHTML = DOMPurify.sanitize(marked.parse(currentContent));
+                                        if (currentRawData) currentRawData.textContent = currentContent;
+                                        scrollToBottom();
+                                    }
+                                    renderPending = false; // 다 그렸으니 다음 요청 받음
+                                });
+                            }
+
+                        } else if (data.type === 'tool_call') {
+                            createToolStatus(data.tool_name);
+                        } else if (data.type === 'history_title') {
+                            if (typeof updateHistoryTitle === 'function')
+                                updateHistoryTitle(data.history_id, data.title);
+                        }
+
+                        // 토큰 외의 이벤트는 즉시 스크롤 (반응성 유지)
+                        if (data.type !== 'token') scrollToBottom();
+
+                    } catch (e) { }
                 }
             }
-            if (currentAiBubble && currentContent) renderContentByMode(currentAiBubble, currentContent);
+
+            // 스트리밍 끝난 후 최종 렌더링 (카드 모드 등을 위해)
+            if (currentAiBubble && currentContent) {
+                renderContentByMode(currentAiBubble, currentContent);
+            }
+
         } catch (error) {
             removeToolStatus();
-            appendMessage('ai', "⚠️ 오류 발생: " + error.message);
+            // 에러 메시지는 raw-data 저장 굳이 안 해도 됨
+            const errorRow = createMessageBubble('ai');
+            errorRow.innerHTML = "⚠️ 오류 발생: " + error.message;
         } finally {
             removeToolStatus();
             userInput.disabled = false; sendBtn.disabled = false;
@@ -613,36 +1000,144 @@
     }
 
     function scrollToBottom() { if (isAutoScrollActive) chatHistory.scrollTop = chatHistory.scrollHeight; }
+
     function forceScrollToBottom() { isAutoScrollActive = true; chatHistory.scrollTop = chatHistory.scrollHeight; }
+
     function removeToolStatus() { chatHistory.querySelectorAll('.tool-status').forEach(el => el.remove()); }
+
     function createToolStatus(toolName) {
         removeToolStatus();
         const div = document.createElement('div'); div.className = 'tool-status';
         div.innerHTML = `<div class="spinner"></div><span>${toolName}...</span>`;
         chatHistory.appendChild(div); scrollToBottom();
     }
+
     function createMessageBubble(role) {
-        const row = document.createElement('div'); row.className = `chat-row ${role==='user'?'user-row':'ai-row'}`;
-        if(role==='ai'){
-            const img = document.createElement('img'); img.src = "{% static 'images/chat_pai.png' %}";
-            img.className = 'ai-avatar'; row.appendChild(img);
+        const row = document.createElement('div');
+        row.className = `chat-row ${role === 'user' ? 'user-row' : 'ai-row'}`;
+
+        if (role === 'ai') {
+            const img = document.createElement('img');
+            img.src = "{% static 'images/chat_pai.png' %}";
+            img.className = 'ai-avatar';
+            row.appendChild(img);
         }
-        const msg = document.createElement('div'); msg.className = `chat-message ${role==='user'?'user-message':'ai-message'}`;
-        if(role==='ai') msg.classList.add('markdown-target');
-        row.appendChild(msg); chatHistory.appendChild(row);
-        return role==='user'? row : msg;
+
+        const msg = document.createElement('div');
+        msg.className = `chat-message ${role === 'user' ? 'user-message' : 'ai-message'}`;
+        if (role === 'ai') msg.classList.add('markdown-target');
+        row.appendChild(msg);
+
+        // [추가된 코드] AI 메시지라면 원본 데이터를 저장할 보이지 않는 창고를 만듭니다.
+        if (role === 'ai') {
+            const rawData = document.createElement('div');
+            rawData.className = 'raw-data';
+            rawData.style.display = 'none'; // 숨김 처리
+            row.appendChild(rawData);
+        }
+
+        chatHistory.appendChild(row);
+        return role === 'user' ? row : msg;
     }
+
     function appendMessage(role, text) {
-        const row = createMessageBubble(role);
-        row.querySelector('.chat-message').innerText = text; return row;
+        const el = createMessageBubble(role);
+
+        if (role === 'user') {
+            // user는 row를 반환
+            el.querySelector('.chat-message').innerText = text;
+        } else {
+            // ai는 msgDiv를 반환
+            el.innerHTML = DOMPurify.sanitize(marked.parse(text));
+            // 보기 모드(카드/한번에/아코디언) 적용
+            if (typeof renderContentByMode === 'function') {
+                renderContentByMode(el);
+            }
+        }
+
+        chatHistory.appendChild(el);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        return el;
     }
-    function addDeleteButton(row, id) {
-        const btn = document.createElement('button'); btn.className='delete-btn'; btn.innerHTML='✕';
-        btn.onclick=()=>deleteMessage(id); row.prepend(btn);
+
+    function addDeleteButton(userRow, messageId) {
+        if (!userRow) return;
+
+        // 이미 있으면 중복 생성 방지
+        if (userRow.querySelector('.delete-btn')) return;
+
+        const btn = document.createElement('button');
+        btn.className = 'delete-btn';
+        btn.type = 'button';
+        btn.textContent = '✕';
+        btn.title = '질문 삭제';
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            deleteMessage(messageId);
+        });
+
+        // [수정된 부분]
+        // 기존: userRow.querySelector('.message-box') <- 없는 클래스를 찾고 있었어요.
+        // 변경: userRow 안에 버튼을 직접 추가하되, 메시지 내용(.chat-message) 앞에 둡니다.
+        // 이렇게 해야 서버에서 렌더링해줄 때랑 모양이 똑같아져요.
+        const messageDiv = userRow.querySelector('.chat-message');
+        if (messageDiv) {
+            userRow.insertBefore(btn, messageDiv);
+        } else {
+            userRow.appendChild(btn);
+        }
     }
-    function deleteMessage(id) { 
-        if(!confirm("삭제하시겠습니까?")) return;
-        fetch('/chat/api/delete/', {method:'POST', body:JSON.stringify({message_id:id})})
-        .then(r=>r.json()).then(d=>{ if(d.status==='success') location.reload(); });
+
+    function deleteMessage(messageId) {
+        const runDelete = async () => {
+            try {
+                const res = await fetch("/chat/api/delete/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message_id: messageId }),
+                });
+
+                const data = await res.json();
+
+                // [수정된 부분]
+                if (data.status !== 'success') {
+                    alert(data.message || "삭제 실패");
+                    return;
+                }
+
+                // 화면에서도 '질문 + 관련 답변들'까지 제거 (새로고침 X)
+                const target = document.getElementById(`row-${messageId}`);
+                if (!target) return;
+
+                let next = target.nextElementSibling;
+                target.remove();
+
+                // 다음 사용자 질문(user-row)이 나오기 전까지 싹 제거 (AI 답변들 삭제)
+                while (next && !next.classList.contains('user-row')) {
+                    const toRemove = next;
+                    next = next.nextElementSibling;
+                    toRemove.remove();
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert("오류 발생");
+            }
+        };
+
+        if (typeof openPaiConfirm === "function") {
+            openPaiConfirm(
+                "이 질문과 관련된 답변이 모두 삭제됩니다.",
+                runDelete,
+                "질문 삭제"
+            );
+            return;
+        }
+
+        if (confirm("이 질문과 관련된 답변이 모두 삭제됩니다.\n삭제하시겠습니까?")) {
+            runDelete();
+        }
     }
+
 </script>
