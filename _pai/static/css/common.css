@@ -166,6 +166,161 @@
     margin: 0;
 }
 
+/* === 페이지 래퍼 스타일 === */
+.page-wrapper {
+    min-height: calc(100vh - 60px);
+    padding: 30px 60px 50px 60px;
+    margin-top: 60px;
+}
+
+/* === 컨텐츠 박스 스타일 === */
+.content-box {
+    border: 2px solid #2d396b;
+    border-radius: 20px;
+    padding: 30px 45px 60px 45px;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.content-box ol {
+    margin-left: 15px;
+}
+
+.content-box li {
+    margin-bottom: 10px;
+}
+
+.bullet-list {
+    list-style-type: disc;
+    margin-left: 15px;
+    margin-top: 5px;
+}
+
+.bullet-list li {
+    margin-bottom: 3px;
+}
+
+.withdraw-info {
+    margin-top: 3px;
+    margin-left: 3px;
+}
+
+.button-area {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* === 모달 스타일 === */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-box {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    width: 300px;
+    border: 2px solid #2d396b;
+}
+
+.modal-text {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    color: #3f4a78;
+}
+
+.modal-btn-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-btn {
+    width: 100px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.modal-confirm {
+    background-color: #3f4a78;
+    color: #fff;
+}
+
+.modal-confirm:hover {
+    background-color: #2d396b;
+}
+
+.modal-cancel {
+    background-color: #f2f2f2;
+    color: #3f3f3f;
+}
+
+.modal-cancel:hover {
+    background-color: #e8e8e8;
+}
+
+/* === Success 페이지 스타일 === */
+.success-page .auth-container {
+    border: none !important;
+    background: transparent !important;
+    padding: 40px 24px !important;
+}
+
+.success-message {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.success-title {
+    color: #3f4a78;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.success-text {
+    color: #3f4a78;
+    font-size: 16px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.success-btn {
+    display: inline-block;
+    padding: 14px 40px;
+    background: linear-gradient(135deg, #4A5B7D 0%, #3f4a78 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(74, 91, 125, 0.3);
+}
+
+.success-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 91, 125, 0.4);
+    background: linear-gradient(135deg, #3f4a78 0%, #2d396b 100%);
+    color: white;
+    text-decoration: none;
+}
+
+
+
 /* === 반응형 === */
 @media (max-width: 768px) {
     .btn {

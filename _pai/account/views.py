@@ -55,8 +55,8 @@ def withdraw_final(request):
         user = request.user
         logout(request)        # 세션 로그아웃
         user.delete()          # DB에서 삭제
-        return redirect("main:index") 
-    return redirect("account:mypage")  # POST가 아니면 마이페이지로
+        return render(request, "account/withdraw_success.html")
+    return redirect("account:myinfo")  # POST가 아니면 마이페이지로
 
 
 # 로그아웃
@@ -82,51 +82,50 @@ def myinfo(request):
     """
     user = request.user
     success_message = ""
+    message_type = "success"  # success, error, warning
 
     # 기본 폼 생성 (GET일 때 사용)
     profile_form = ProfileUpdateForm(user=user)
     password_form = PasswordChangeForm(user)
 
     if request.method == "POST":
-        if "update_info" in request.POST:
-            # 통합 정보 수정 처리
+        if "update_nickname" in request.POST:
+            # 별명만 변경
             profile_form = ProfileUpdateForm(request.POST, user=user)
-            password_form = PasswordChangeForm(user, request.POST)
-            
-            profile_changed = False
-            password_changed = False
-            
-            # 별명 변경 처리 (별명이 입력된 경우에만)
             if profile_form.is_valid():
                 new_nickname = profile_form.cleaned_data.get('nickname', '').strip()
                 if new_nickname and new_nickname != user.first_name:
                     profile_form.save()
-                    profile_changed = True
+                    success_message = "별명이 성공적으로 변경되었습니다."
+                    message_type = "success"
+                elif not new_nickname:
+                    success_message = "변경할 별명을 입력해주세요."
+                    message_type = "error"
+                else:
+                    success_message = "현재 별명과 동일합니다."
+                    message_type = "warning"
+            # 비밀번호 폼은 초기화
+            password_form = PasswordChangeForm(user)
             
-            # 비밀번호 변경 처리 (새 비밀번호가 입력된 경우에만)
-            new_password1 = request.POST.get('new_password1', '').strip()
-            if new_password1:  # 새 비밀번호가 입력된 경우에만 검증
-                if password_form.is_valid():
-                    changed_user = password_form.save()
-                    # 비밀번호를 바꿔도 로그인 풀리지 않게 세션 유지
-                    update_session_auth_hash(request, changed_user)
-                    password_changed = True
-            
-            # 성공 메시지 설정
-            if profile_changed and password_changed:
-                success_message = "별명과 비밀번호가 성공적으로 변경되었습니다."
-            elif profile_changed:
-                success_message = "별명이 성공적으로 변경되었습니다."
-            elif password_changed:
+        elif "update_password" in request.POST:
+            # 비밀번호만 변경
+            password_form = PasswordChangeForm(user, request.POST)
+            if password_form.is_valid():
+                changed_user = password_form.save()
+                # 비밀번호를 바꿔도 로그인 풀리지 않게 세션 유지
+                update_session_auth_hash(request, changed_user)
                 success_message = "비밀번호가 성공적으로 변경되었습니다."
-            elif not new_password1 and not profile_form.cleaned_data.get('nickname', '').strip():
-                success_message = "변경할 정보를 입력해주세요."
+                # 비밀번호 폼 초기화 (보안상 입력 필드 비우기)
+                password_form = PasswordChangeForm(user)
+            # 프로필 폼은 초기화
+            profile_form = ProfileUpdateForm(user=user)
 
     context = {
         "user_obj": user,
         "profile_form": profile_form,
         "password_form": password_form,
         "success_message": success_message,
+        "message_type": message_type,
         "chat_interface_url": reverse("chat:chat_interface"),
     }
     return render(request, "account/myinfo.html", context)

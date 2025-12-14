@@ -1,146 +1,11 @@
 {% extends 'layout/base.html' %}
-{% load static %}
 
 {% block title %}회원탈퇴 - Pai{% endblock %}
 
-{% block extra_css %}
-<style>
-    /* ===== 메인 콘텐츠 ===== */
-    .page-wrapper {
-        min-height: calc(100vh - 60px);
-        padding: 30px 60px 50px 60px;
-        margin-top: 60px; /* 네비게이션 바 높이만큼 여백 */
-    }
-
-    .page-title {
-        font-size: 13px;
-        color: #555;
-        margin-bottom: 12px;
-    }
-
-    .content-box {
-        border: 2px solid #a6b8d9;
-        border-radius: 20px;
-        padding: 30px 45px 60px 45px;
-        font-size: 15px;
-        line-height: 1.6;
-    }
-
-    .content-box ol {
-        margin-left: 18px;
-    }
-
-    .content-box li {
-        margin-bottom: 12px;
-    }
-
-    .bullet-list {
-        list-style-type: disc;
-        margin-left: 18px;
-        margin-top: 6px;
-    }
-
-    .bullet-list li {
-        margin-bottom: 4px;
-    }
-
-    .withdraw-info {
-        margin-top: 4px;
-        margin-left: 4px;
-    }
-
-    .button-area {
-        text-align: center;
-        margin-top: 32px;
-    }
-
-    .withdraw-btn {
-        display: inline-block;
-        min-width: 180px;
-        padding: 12px 40px;
-        border-radius: 24px;
-        border: none;
-        background-color: #4A5B7D;
-        color: #ffffff;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-
-    .withdraw-btn:hover {
-        background-color: #3b4c6e;
-    }
-
-    /* ===== 모달 ===== */
-    .modal-overlay {
-        position: fixed;
-        inset: 0;
-        display: none;
-        justify-content: center;
-        align-items: center;
-        background-color: rgba(0, 0, 0, 0.35);
-        z-index: 1000;
-    }
-
-    .modal-box {
-        background-color: #ffffff;
-        border-radius: 22px;
-        padding: 40px 55px 32px 55px;
-        text-align: center;
-        min-width: 420px;
-        max-width: 520px;
-        border: 1px solid #444;
-    }
-
-    .modal-text {
-        font-size: 17px;
-        line-height: 1.6;
-        margin-bottom: 26px;
-    }
-
-    .modal-btn-area {
-        display: flex;
-        justify-content: center;
-        gap: 24px;
-    }
-
-    .modal-btn {
-        min-width: 140px;
-        padding: 11px 20px;
-        border-radius: 25px;
-        border: none;
-        font-size: 15px;
-        cursor: pointer;
-    }
-
-    .modal-confirm {
-        background-color: #4A5B7D;
-        color: #fff;
-    }
-    
-    .modal-confirm:hover {
-        background-color: #3b4c6e;
-    }
-
-    .modal-cancel {
-        background-color: #4f4f4f;
-        color: #fff;
-    }
-
-    .modal-btn:hover {
-        opacity: 0.9;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-
-    <!-- 메인 내용 -->
-    <div class="page-wrapper">
-        <div class="page-title"></div>
-
-        <div class="content-box">
-            <ol>
+<div class="page-wrapper">
+    <div class="content-box">
+        <ol>
                 <li>
                     탈퇴 시 처리되는 내용
                     <ul class="bullet-list">
@@ -173,39 +38,39 @@
                         탈퇴 후 즉시 로그아웃되며 서비스 이용이 제한됩니다.
                     </div>
                 </li>
-            </ol>
+        </ol>
 
-            <div class="button-area">
-                <button type="button" class="withdraw-btn" id="open-modal-btn">
-                    회원탈퇴하기
-                </button>
-            </div>
+        <div class="button-area">
+            <button type="button" class="btn btn-danger" id="open-modal-btn">
+                회원탈퇴하기
+            </button>
         </div>
     </div>
+</div>
 
-    <!-- 탈퇴 폼 (보이지 않음) -->
-    <form id="delete-form" method="POST" action="{% url 'account:withdraw_final' %}">
-        {% csrf_token %}
-    </form>
+<!-- 탈퇴 폼 (보이지 않음) -->
+<form id="delete-form" method="POST" action="{% url 'account:withdraw_final' %}">
+    {% csrf_token %}
+</form>
 
-    <!-- 탈퇴 확인 모달 -->
-    <div id="confirm-modal" class="modal-overlay">
-        <div class="modal-box">
-            <p class="modal-text">
-                정말 탈퇴하시겠습니까?<br>
-                탈퇴 후에는 모든 데이터가 삭제되며 복구할 수 없습니다.
-            </p>
+<!-- 탈퇴 확인 모달 -->
+<div id="confirm-modal" class="modal-overlay">
+    <div class="modal-box">
+        <p class="modal-text">
+            정말 탈퇴하시겠습니까?<br>
+            탈퇴 후에는 모든 데이터가 삭제되며 복구할 수 없습니다.
+        </p>
 
-            <div class="modal-btn-area">
-                <button type="button" class="modal-btn modal-confirm" id="confirm-btn">
-                    탈퇴하기
-                </button>
-                <button type="button" class="modal-btn modal-cancel" id="cancel-btn">
-                    아니요
-                </button>
-            </div>
+        <div class="modal-btn-area">
+            <button type="button" class="modal-btn modal-confirm" id="confirm-btn">
+                탈퇴하기
+            </button>
+            <button type="button" class="modal-btn modal-cancel" id="cancel-btn">
+                아니요
+            </button>
         </div>
     </div>
+</div>
 
     <script>
         const openModalBtn = document.getElementById('open-modal-btn');
@@ -236,7 +101,4 @@
             deleteForm.submit();  // POST 요청 전송
         });
     </script>
-{% endblock %}
-
-{% block extra_js %}
 {% endblock %}

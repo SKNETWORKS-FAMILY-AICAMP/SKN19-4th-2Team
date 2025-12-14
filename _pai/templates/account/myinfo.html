@@ -15,17 +15,17 @@
 </div>
 
 {% if success_message %}
-<div style="background-color: #d4edda; color: #155724; padding: 12px; border-radius: 20px; margin: 16px 0; text-align: center; font-size: 12px;">
+<div class="message {{ message_type }}">
     {{ success_message }}
 </div>
 {% endif %}
 
-<!-- 정보 수정 폼 -->
+<!-- 별명 수정 폼 -->
 <form method="POST">
     {% csrf_token %}
     
     <div class="form-group">
-        <label for="id_nickname">새 별명 (선택사항)</label>
+        <label for="id_nickname">새 별명</label>
         {{ profile_form.nickname }}
         {% if profile_form.nickname.errors %}
             <div class="error-message">
@@ -35,13 +35,20 @@
             </div>
         {% endif %}
     </div>
+    
+    <button type="submit" name="update_nickname" class="primary-btn">별명 변경</button>
+</form>
 
-    <div class="line-wrap">
-        <div class="line"></div>
-    </div>
+<div class="line-wrap">
+    <div class="line"></div>
+</div>
+
+<!-- 비밀번호 변경 폼 -->
+<form method="POST">
+    {% csrf_token %}
     
     <div class="form-group">
-        <label for="id_old_password">현재 비밀번호 (비밀번호 변경시 필수)</label>
+        <label for="id_old_password">현재 비밀번호</label>
         {{ password_form.old_password }}
         {% if password_form.old_password.errors %}
             <div class="error-message">
@@ -53,7 +60,7 @@
     </div>
     
     <div class="form-group">
-        <label for="id_new_password1">새 비밀번호 (선택사항)</label>
+        <label for="id_new_password1">새 비밀번호</label>
         {{ password_form.new_password1 }}
         {% if password_form.new_password1.errors %}
             <div class="error-message">
@@ -76,7 +83,7 @@
         {% endif %}
     </div>
     
-    <button type="submit" name="update_info" class="primary-btn">정보 변경</button>
+    <button type="submit" name="update_password" class="primary-btn">비밀번호 변경</button>
 </form>
 
 <div class="line-wrap">
