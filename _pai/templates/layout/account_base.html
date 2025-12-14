@@ -32,6 +32,12 @@
         .logo-img {
             width: 160px; /* 200px의 80% */
             margin-bottom: 16px; /* 20px의 80% */
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .logo-img:hover {
+            opacity: 0.8;
         }
 
         .form-group {
@@ -190,7 +196,9 @@
 
     <div class="auth-container">
         <!-- 로고 -->
-        <img src="{% static 'images/logo_image.png' %}" alt="PAI Logo" class="logo-img">
+        <a href="{% url 'main:index' %}">
+            <img src="{% static 'images/logo_image.png' %}" alt="PAI Logo" class="logo-img">
+        </a>
 
         <!-- 페이지별 내용 -->
         {% block content %}
