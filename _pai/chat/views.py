@@ -347,62 +347,84 @@ def chat_stream_api(request):
 # =========================================================
 @csrf_exempt
 def delete_message_api(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            target_chat_id = data.get("message_id")
-        except:
-            return JsonResponse({"error": "Invalid JSON"}, status=400)
+    if request.method != "POST":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
 
-        # 삭제 권한 검증 (회원 vs 비회원)
-        try:
-            if request.user.is_authenticated:
-                target_chat = Chat.objects.get(
-                    chat_id=target_chat_id, history__user=request.user
+    try:
+        data = json.loads(request.body)
+        message_id = data.get("message_id")
+        if not message_id:
+            return JsonResponse({"status": "failed", "message": "message_id is required"}, status=400)
+
+        # ✅ 비회원/세션 기반 히스토리 대응
+        if not request.session.session_key:
+            request.session.save()
+
+        # 1. 삭제 대상 채팅(Human Message) 찾기
+        if request.user.is_authenticated:
+            try:
+                target_chat = Chat.objects.select_related("history").get(
+                    chat_id=message_id,
+                    history__user=request.user,
                 )
-            else:
-                target_chat = Chat.objects.get(
-                    chat_id=target_chat_id,
-                    history__session_id=request.session.session_key,
+            except Chat.DoesNotExist:
+                target_chat = Chat.objects.select_related("history").get(
+                    chat_id=message_id,
                     history__user__isnull=True,
+                    history__session_id=request.session.session_key,
                 )
-
-            # (이하 삭제 로직 동일)
-            history = target_chat.history
-            if target_chat.type == "HUMAN":
-                start_order = target_chat.order_num
-                next_human = (
-                    Chat.objects.filter(
-                        history=history, type="HUMAN", order_num__gt=start_order
-                    )
-                    .order_by("order_num")
-                    .first()
-                )
-
-                if next_human:
-                    end_order = next_human.order_num
-                    Chat.objects.filter(
-                        history=history,
-                        order_num__gte=start_order,
-                        order_num__lt=end_order,
-                    ).delete()
-                else:
-                    Chat.objects.filter(
-                        history=history, order_num__gte=start_order
-                    ).delete()
-
-                return JsonResponse({"status": "success"})
-
-            return JsonResponse(
-                {"status": "failed", "message": "Can only delete HUMAN messages"}
+        else:
+            target_chat = Chat.objects.select_related("history").get(
+                chat_id=message_id,
+                history__user__isnull=True,
+                history__session_id=request.session.session_key,
             )
 
-        except Chat.DoesNotExist:
+        # HUMAN 메시지가 아니면 삭제 거부 (안전장치)
+        if target_chat.type != "HUMAN":
             return JsonResponse(
-                {"status": "failed", "message": "Message not found or unauthorized"}
+                {"status": "failed", "message": "Can only delete HUMAN messages"},
+                status=400,
             )
 
-    return JsonResponse({"error": "Method not allowed"}, status=405)
+        history = target_chat.history
+        start_order = target_chat.order_num
+
+        # =================================================================
+        # [핵심 수정] 무조건 뒤를 다 지우는 게 아니라, "다음 질문" 앞까지만 지운다.
+        # =================================================================
+        
+        # 1. 내 질문(start_order)보다 뒤에 있는 "다음 HUMAN 질문"을 찾는다.
+        next_human_msg = Chat.objects.filter(
+            history=history,
+            type="HUMAN",
+            order_num__gt=start_order  # 현재 번호보다 큰 것 중
+        ).order_by("order_num").first() # 가장 가까운 것
+
+        if next_human_msg:
+            # 2-A. 뒤에 다른 질문이 있다면? -> 그 질문 직전까지만(range) 삭제
+            end_order = next_human_msg.order_num
+            Chat.objects.filter(
+                history=history,
+                order_num__gte=start_order, # 나 포함
+                order_num__lt=end_order     # 다음 질문 미만 (<)
+            ).delete()
+        else:
+            # 2-B. 뒤에 질문이 없다면? (마지막 대화인 경우) -> 기존처럼 뒤에 싹 다 삭제
+            Chat.objects.filter(
+                history=history,
+                order_num__gte=start_order
+            ).delete()
+
+        return JsonResponse({"status": "success"})
+
+    except Chat.DoesNotExist:
+        return JsonResponse(
+            {"status": "failed", "message": "Message not found or unauthorized"},
+            status=404,
+        )
+    except Exception as e:
+        return JsonResponse({"status": "failed", "message": str(e)}, status=500)
 
 
 # =========================================================
@@ -476,17 +498,20 @@ def new_chat(request):
 @csrf_exempt
 def update_history_order(request):
     """
-    프론트엔드에서 [id_A, id_B, id_C] 순서로 ID 리스트를 보내면,
-    DB의 order_num을 업데이트하여 순서를 고정합니다.
+    [최적화됨] 프론트엔드에서 [id_A, id_B, id_C] 순서로 ID 리스트를 보내면,
+    bulk_update를 사용하여 단 한 번의 쿼리로 순서를 업데이트합니다.
     """
     if request.method == "POST":
         try:
             data = json.loads(request.body)
             ordered_ids = data.get("ordered_ids", [])
+            
+            if not ordered_ids:
+                 return JsonResponse({"status": "success"})
 
             total_count = len(ordered_ids)
 
-            # 회원 / 비회원별로 필터 기준을 분리
+            # 1. 권한 확인 (내 채팅방만 건드려야 하니까 필터 생성)
             if request.user.is_authenticated:
                 base_filter = {"user": request.user}
             else:
@@ -497,14 +522,42 @@ def update_history_order(request):
                     "user__isnull": True,
                 }
 
+            # 2. [DB 최적화 핵심] 대상 객체들을 한 번에 메모리로 가져오기 (SELECT WHERE IN)
+            #    N번 쿼리 날리는 대신 1번만 날립니다.
+            histories = list(ChatHistory.objects.filter(
+                history_id__in=ordered_ids,
+                **base_filter
+            ))
+
+            # 3. 빠른 매칭을 위해 딕셔너리로 변환 {id: 객체}
+            history_map = {h.history_id: h for h in histories}
+            
+            update_list = []
+
+            # 4. 프론트에서 보낸 순서대로 메모리 상의 객체 값 수정
             for index, hist_id in enumerate(ordered_ids):
-                new_order = total_count - index  # 위에 있을수록 숫자 큼
-                ChatHistory.objects.filter(
-                    history_id=hist_id,
-                    **base_filter,
-                ).update(order_num=new_order)
+                try:
+                    # JSON 데이터는 문자열일 수 있으므로 int로 변환
+                    target_id = int(hist_id)
+                except ValueError:
+                    continue
+
+                if target_id in history_map:
+                    history = history_map[target_id]
+                    new_order = total_count - index # 위쪽일수록 높은 번호
+                    
+                    # 값이 변경된 경우에만 업데이트 리스트에 추가
+                    if history.order_num != new_order:
+                        history.order_num = new_order
+                        update_list.append(history)
+
+            # 5. [DB 최적화 핵심] 변경된 객체들을 한 번에 DB에 저장 (BULK UPDATE)
+            #    100개를 바꿔도 쿼리는 딱 1번만 나갑니다!
+            if update_list:
+                ChatHistory.objects.bulk_update(update_list, ["order_num"])
 
             return JsonResponse({"status": "success"})
+
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)})
 
@@ -607,6 +660,53 @@ def rename_history_api(request):
             )
 
         return JsonResponse({"status": "success", "title": new_title})
+
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)})
+
+
+
+# =========================================================
+# 즐겨찾기 상태
+# =========================================================
+@csrf_exempt
+def toggle_pin_api(request):
+    """
+    특정 채팅방의 즐겨찾기(is_pinned) 상태를 토글(ON/OFF)합니다.
+    """
+    if request.method != "POST":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        history_id = data.get("history_id")
+
+        if not history_id:
+            return JsonResponse({"status": "error", "message": "history_id required"})
+
+        # 회원/비회원 구분 필터
+        if request.user.is_authenticated:
+            history = ChatHistory.objects.filter(history_id=history_id, user=request.user).first()
+        else:
+            if not request.session.session_key:
+                request.session.save()
+            history = ChatHistory.objects.filter(
+                history_id=history_id, 
+                session_id=request.session.session_key, 
+                user__isnull=True
+            ).first()
+
+        if not history:
+            return JsonResponse({"status": "error", "message": "History not found"})
+
+        # [핵심] 상태 뒤집기 (True <-> False)
+        history.is_pinned = not history.is_pinned
+        history.save()
+
+        return JsonResponse({
+            "status": "success", 
+            "is_pinned": history.is_pinned
+        })
 
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)})
