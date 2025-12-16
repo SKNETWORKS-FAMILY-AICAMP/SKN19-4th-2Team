@@ -269,7 +269,7 @@
 
 | 요구사항 ID | 테스트 내용 | INPUT | 테스트 결과 (전) | 테스트 결과 (후) |
 |:---:|:---:|:---:|:---:|:---:|
-| REQ_CHAT_001 | 새 채팅 생성 시 chat DB에 채팅 내역 생성 | UserID 7 유저가 새 챙팅 생성 | <img src="images/chat_interface_1.jpg"> | <img src="images/chat_interface_2.jpg"> |
+| REQ_CHAT_001 | 새 채팅 생성 시 chat DB에 채팅 내역 생성 | UserID 7 유저가 새 챙팅 생성 | <img src="images/chat_interface_1.jpg" width="50%"> | <img src="images/chat_interface_2.jpg" width="50%"> |
 
 ## 9. 수행결과 
 
