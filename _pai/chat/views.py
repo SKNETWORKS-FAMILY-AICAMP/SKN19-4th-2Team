@@ -1,6 +1,8 @@
 # chat/views.py
 
 import json
+import time
+import concurrent.futures  # [추가] 비동기 작업을 위한 모듈
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import StreamingHttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -166,7 +168,7 @@ def chat_interface(request):
 
 
 # =========================================================
-# API: 채팅 스트리밍
+# API: 채팅 스트리밍 (비동기 제목 생성 적용)
 # =========================================================
 @csrf_exempt
 def chat_stream_api(request):
@@ -196,7 +198,7 @@ def chat_stream_api(request):
             )
 
         # ------------------------------------------------------------------
-        # [순서 관리] 현재 DB의 마지막 순서를 가져와서 기준점으로 삼습니다.
+        # [순서 관리]
         # ------------------------------------------------------------------
         last_order = history.chats.aggregate(Max("order_num"))["order_num__max"] or 0
         current_save_order = last_order + 1
@@ -212,28 +214,19 @@ def chat_stream_api(request):
             order_num=current_save_order,
         )
 
-        # 다음 메시지(Tool이나 AI)가 저장될 순서 번호 준비
         current_save_order += 1
 
-        # 👉 [추가] 첫 메시지라면 LLM으로 채팅방 제목 생성
-        new_title = None
-        if is_first_message:
-            new_title = generate_history_title_by_llm(user_input)
-            history.description = new_title
-            history.save(update_fields=["description"])
+        # =====================================================
+        # [최적화] 제목 생성은 여기서 기다리지 않고(Block X),
+        # 아래 event_stream 내부의 별도 스레드(Thread)에게 맡깁니다.
+        # =====================================================
 
-        # =====================================================
-        # 3. LangChain 메시지 변환 (컨텍스트 로드)
-        #    + 여기서 "사용자 닉네임" / "모델 이름 Pai" 주입
-        # =====================================================
+        # 3. LangChain 메시지 변환
         if request.user.is_authenticated:
-            # 로그인한 유저라면 username 을 닉네임으로 사용
             user_nickname = request.user.first_name or "사용자"
         else:
-            # 비회원은 그냥 '게스트' 라고 인식
             user_nickname = "게스트"
 
-        # 기존 SYSTEM_PROMPT 에 대화/호칭 관련 지침을 덧붙인 버전
         dynamic_system_prompt = SYSTEM_PROMPT + f"""
 
 ------------------------------------
@@ -250,43 +243,68 @@ def chat_stream_api(request):
         db_chats = Chat.objects.filter(history=history).order_by("order_num")
         langchain_messages = convert_db_chats_to_langchain(
             db_chats,
-            system_prompt=dynamic_system_prompt,  # ← 여기! 기존 SYSTEM_PROMPT 대신
+            system_prompt=dynamic_system_prompt,
         )
 
         config = {"configurable": {"thread_id": str(history.history_id)}}
 
         def event_stream():
-            # nonlocal을 사용하여 바깥 변수(current_save_order)를 함수 안에서 수정할 수 있게 함
             nonlocal current_save_order
 
             full_ai_response = ""
             seen_tool_ids = set()
 
+            # [수정] DB 객체를 미리 잡아두기 위한 변수
+            ai_message_obj = None
+
+            last_save_time = time.time()
+
+            # --------------------------------------------------------
+            # [비동기] 제목 생성 작업자 준비
+            # --------------------------------------------------------
+            executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+            title_future = None
+            title_sent = False  # 클라이언트에 보냈는지 체크
+
+            # (내부 함수) 제목 생성 및 DB 저장 작업
+            def title_task():
+                generated_title = generate_history_title_by_llm(user_input)
+                # DB 저장도 스레드 안에서 처리
+                history.description = generated_title
+                history.save(update_fields=["description"])
+                return generated_title
+
             try:
-                # 사용자 메시지 ID 전송 (삭제 버튼용)
+                # 1. 첫 메시지라면, 제목 생성 '숙제'를 백그라운드 스레드에 던져놓고 바로 다음 줄로 진행!
+                if is_first_message:
+                    title_future = executor.submit(title_task)
+
+                # 2. 사용자 메시지 ID 전송 (삭제 버튼용)
                 yield json.dumps(
                     {"type": "user_message_id", "chat_id": user_chat.chat_id}
                 ) + "\n"
 
-                # 👉 [추가] 새 제목이 만들어졌으면 프론트에 한 번 보내기
-                if new_title is not None:
-                    yield json.dumps(
-                        {
-                            "type": "history_title",
-                            "history_id": history.history_id,
-                            "title": new_title,
-                        }
-                    ) + "\n"
-
-                # LangGraph 에이전트 스트리밍
+                # 3. LangGraph 스트리밍 시작 (답변 생성)
                 for msg, metadata in agent_executor.stream(
                     {"messages": langchain_messages},
                     config=config,
                     stream_mode="messages",
                 ):
+                    # 틈틈이 제목 생성 다 됐는지 확인 (답변 생성 중에 제목이 완성되면 바로 전송)
+                    if title_future and not title_sent and title_future.done():
+                        new_title = title_future.result()
+                        yield json.dumps(
+                            {
+                                "type": "history_title",
+                                "history_id": history.history_id,
+                                "title": new_title,
+                            }
+                        ) + "\n"
+                        title_sent = True
+
                     curr_node = metadata.get("langgraph_node", "")
 
-                    # (A) AI 텍스트 응답 (스트리밍)
+                    # (A) AI 텍스트 응답
                     if curr_node == "agent" and msg.content:
                         if not msg.tool_calls:
                             full_ai_response += msg.content
@@ -294,7 +312,32 @@ def chat_stream_api(request):
                                 {"type": "token", "content": msg.content}
                             ) + "\n"
 
-                    # (B) 도구 호출 알림 (저장은 생략하고 화면 알림만)
+                            # =================================================
+                            # [추가] 1.5초마다 중간 저장 (Checkpoint)
+                            # =================================================
+                            current_time = time.time()
+                            # 마지막 저장 후 1.5초가 지났다면?
+                            if (current_time - last_save_time) > 1.5:
+                                try:
+                                    if ai_message_obj is None:
+                                        # 아직 DB에 줄이 안 그어졌다면 -> 새로 생성 (Create)
+                                        ai_message_obj = Chat.objects.create(
+                                            history=history,
+                                            type="AI",
+                                            content=full_ai_response,
+                                            order_num=current_save_order,
+                                        )
+                                    else:
+                                        # 이미 DB에 줄이 있다면 -> 내용만 업데이트 (Update)
+                                        ai_message_obj.content = full_ai_response
+                                        ai_message_obj.save(update_fields=['content'])
+                                    
+                                    # 저장 시계 리셋
+                                    last_save_time = current_time
+                                except Exception:
+                                    pass # 중간 저장 실패는 쿨하게 무시 (다음 턴에 하면 됨)
+
+                    # (B) 도구 호출 알림
                     if curr_node == "agent" and msg.tool_calls:
                         for tool_call in msg.tool_calls:
                             t_id = tool_call.get("id")
@@ -305,35 +348,73 @@ def chat_stream_api(request):
                                     {"type": "tool_call", "tool_name": t_name}
                                 ) + "\n"
 
-                    # (C) [핵심 수정] 도구 실행 결과 (TOOLS) -> DB 저장 추가!
+                    # (C) 도구 실행 결과 저장
                     if curr_node == "tools":
                         content_str = str(msg.content)
-
-                        # 1. 화면에 전송
                         yield json.dumps(
                             {"type": "tool_result", "length": len(content_str)}
                         ) + "\n"
 
-                        # 2. DB에 저장 (type='TOOLS')
                         Chat.objects.create(
                             history=history,
                             type="TOOLS",
                             content=content_str,
                             order_num=current_save_order,
                         )
-                        current_save_order += 1  # 순서 증가
+                        current_save_order += 1
 
-                # 4. [AI 최종 답변 DB 저장]
+                # 4. 스트리밍이 끝났는데 아직 제목이 안 갔다면? (답변이 너무 짧아서 제목보다 빨리 끝난 경우)
+                #    여기서 잠깐 기다렸다가 보내줍니다.
+                if title_future and not title_sent:
+                    new_title = title_future.result() # 끝날 때까지 대기
+                    yield json.dumps(
+                        {
+                            "type": "history_title",
+                            "history_id": history.history_id,
+                            "title": new_title,
+                        }
+                    ) + "\n"
+
+                # 5. [AI 최종 답변 저장] - (수정됨)
                 if full_ai_response:
-                    Chat.objects.create(
-                        history=history,
-                        type="AI",
-                        content=full_ai_response,
-                        order_num=current_save_order,
-                    )
+                    if ai_message_obj is None:
+                        # 한 번도 저장 안 된 짧은 답변일 경우 생성
+                        Chat.objects.create(
+                            history=history,
+                            type="AI",
+                            content=full_ai_response,
+                            order_num=current_save_order,
+                        )
+                    else:
+                        # 중간 저장이 된 경우 마지막으로 확실하게 업데이트
+                        ai_message_obj.content = full_ai_response
+                        ai_message_obj.save(update_fields=['content'])
 
             except Exception as e:
                 yield json.dumps({"type": "error", "message": str(e)}) + "\n"
+            
+            finally:
+                # =========================================================
+                # [Finally 수정] 중간 저장을 도입했으므로 로직 단순화
+                # =========================================================
+                try:
+                    # 혹시나 에러/중단으로 루프를 빠져나왔을 때, 마지막 잔여물 저장
+                    if full_ai_response:
+                        if ai_message_obj is None:
+                            Chat.objects.create(
+                                history=history,
+                                type="AI",
+                                content=full_ai_response,
+                                order_num=current_save_order,
+                            )
+                        else:
+                            # 기존 내용 업데이트
+                            ai_message_obj.content = full_ai_response
+                            ai_message_obj.save(update_fields=['content'])
+                except Exception:
+                    pass
+                
+                executor.shutdown(wait=False)
 
         return StreamingHttpResponse(
             event_stream(), content_type="application/x-ndjson"
