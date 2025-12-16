@@ -1,7 +1,8 @@
 # 💻 AI 기반 컴퓨터 비전 관련 특허 질의응답 시스템
 
-<img src="images/logo.png" alt="프로젝트 필요성" width="80%">
-<img src="images/pai.png" alt="프로젝트 필요성" width="80%">
+<p align="center">
+    <img src="images/logo.png" alt="Pai 로고" width="70%">
+</p>
 
 ## 1. 팀 소개
     
@@ -44,7 +45,9 @@
 
 ### 프로젝트 필요성(배경)
 
-<img src="images/neccesary.jpg" alt="프로젝트 필요성" width="80%">
+<p align="center">
+    <img src="images/neccesary.jpg" alt="프로젝트 필요성" width="80%">
+</p>
 
 기존 특허 질의응답 환경은 전문가 중심으로 운영되어 개인 및 중소기업의 접근성이 제한적이다. 
 본 프로젝트는 LLM 기반 웹 챗봇을 통해 이러한 문제를 해결하고자 한다.
