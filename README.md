@@ -1,7 +1,7 @@
 # 💻 AI 기반 컴퓨터 비전 관련 특허 질의응답 시스템
 
 <p align="center">
-    <img src="images/logo.png" alt="Pai 로고" width="70%">
+    <img src="images/logo.png" alt="Pai 로고" width="50%">
 </p>
 
 ## 1. 팀 소개
