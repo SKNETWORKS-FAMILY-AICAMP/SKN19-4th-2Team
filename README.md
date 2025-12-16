@@ -121,6 +121,93 @@
   </tbody>
 </table>
 
+### 디렉토리 구조
+
+```python
+📁Pai-Django
+├─ 📁_pai
+│  │
+│  ├─ 📁_pai
+│  │   ├─ __init__.py   
+│  │   ├─ asgi.py
+│  │   ├─ settings.py
+│  │   ├─ urls.py      
+│  │   └─ wsgi.py
+│  │
+│  ├─ 📁account
+│  │   ├─ 📁migrations
+│  │   ├─ __init__.py
+│  │   ├─ admin.py
+│  │   ├─ apps.py
+│  │   ├─ forms.py
+│  │   ├─ models.py
+│  │   ├─ tests.py
+│  │   ├─ urls.py           
+│  │   └─ views.py                     
+│  │
+│  ├─ 📁chat
+│  │   ├─ 📁migrations
+│  │   ├─ __init__.py
+│  │   ├─ admin.py
+│  │   ├─ apps.py
+│  │   ├─ models.py
+│  │   ├─ tests.py
+│  │   ├─ urls.py           
+│  │   └─ views.py   
+│  │
+│  ├─ 📁db_search
+│  │   ├─ 📁doc_db
+│  │   └─ 📁ipc_db
+│  │
+│  ├─ llm_module
+│  │
+│  ├─ 📁main
+│  │   ├─ 📁migrations
+│  │   ├─ __init__.py
+│  │   ├─ admin.py
+│  │   ├─ apps.py
+│  │   ├─ models.py
+│  │   ├─ tests.py
+│  │   ├─ urls.py           
+│  │   └─ views.py 
+│  │
+│  ├─ 📁sessions
+│  │
+│  ├─ 📁static
+│  │   ├─ 📁css
+│  │   │   ├─ common.css
+│  │   │   ├─ main_style.css
+│  │   │   └─ navbar.css
+│  │   │
+│  │   ├─ 📁images
+│  │   └─ 📁js
+│  │       └─ main_script.js
+│  │
+│  └─  template
+│      ├─ 📁account
+│      │   ├─ login.html
+│      │   ├─ myinfo.html
+│      │   ├─ signup.html
+│      │   ├─ signup_success.html
+│      │   ├─ withdraw.html
+│      │   └─ withdraw_success.html
+│      │ 
+│      ├─ 📁chat
+│      │   ├─ chat_component.html 
+│      │   └─ chat_interface.html 
+│      │
+│      ├─ 📁layout
+│      │   ├─ account_base.html    #
+│      │   ├─ base.html   #
+│      │   └─ navbar.html #
+│      │ 
+│      └─ 📁main
+│          └─ index.html #
+│  
+├─ 📁images # README 참조 이미지
+└─ README.md
+```
+
 ## 4. 시스템 구성도
 
 ## 5. 요구사항 정의서 (문서 캡처본)
