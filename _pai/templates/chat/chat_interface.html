@@ -36,6 +36,9 @@
             display: flex;
             flex: 1;
             overflow: hidden;
+            
+            /* [핵심 수정] 자식인 '열기 버튼'이 이곳을 기준으로 위치를 잡도록 설정 */
+            position: relative; 
         }
 
         /* === 사이드바 === */
@@ -45,13 +48,17 @@
             border-right: 1px solid #e0e0e0;
             display: flex;
             flex-direction: column;
-            padding: 20px 16px;
+            
+            /* [중요] 닫기 버튼을 절대 위치로 잡기 위해 relative 설정 */
+            position: relative; 
+            
+            /* [조정] 위쪽 여백: 닫기 버튼이 들어갈 공간 확보 */
+            padding: 20px 16px; 
+            
             flex-shrink: 0;
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-
             overflow: hidden;
             white-space: nowrap;
-            /* 접힐 때 내용물이 흔들리지 않게 고정 */
             transform-origin: left;
         }
 
@@ -84,6 +91,7 @@
             /* 클릭 방지 */
         }
 
+        /* [수정] 새 채팅 버튼 (닫기 버튼 피해서 아래로 이동) */
         .new-chat-btn {
             width: 100%;
             padding: 12px;
@@ -98,8 +106,12 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 24px;
             text-decoration: none;
+
+            /* ▼▼▼ [미세 조정 구역] 버튼 사이 간격 ▼▼▼ */
+            margin-top: 24px;   /* 닫기 버튼 때문에 위쪽 여백 추가 */
+            margin-bottom: 24px; /* 채팅 목록 헤더와의 간격 */
+            /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
         }
 
         .new-chat-btn:hover {
@@ -310,15 +322,16 @@
             flex: 1;
         }
 
-        /* 사이드바 헤더 (채팅 목록 + 정렬 + 닫기 버튼) */
+        /* [수정] 사이드바 헤더 (구조 단순화) */
         .sidebar-header {
             font-size: 13px;
             font-weight: 700;
             color: #555;
             margin-bottom: 12px;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* 양끝 정렬 (제목 <-> 정렬버튼) */
             align-items: center;
+            height: 32px;
         }
 
         .sidebar-header-left {
@@ -327,70 +340,107 @@
             gap: 6px;
         }
 
+        /* 제목 스타일 */
         .sidebar-header-title {
-            font-size: inherit;
-            font-weight: inherit;
-            color: inherit;
+            font-size: 14px;
+            color: #374151;
+            white-space: nowrap;
+            /* 혹시 모르니 왼쪽 여백 살짝 */
+            padding-left: 4px; 
         }
 
-        /* 정렬(⇅) 버튼 – 아직 기능은 없고 자리만 */
+        /* 기존 .sidebar-sort-btn 스타일은 단순화 (껍데기만 남김) */
         .sidebar-sort-btn {
             border: none;
             background: transparent;
             cursor: pointer;
             font-size: 14px;
             color: #6b7280;
-            padding: 0 2px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            /* hover 효과는 이제 부모(wrapper)가 담당하므로 제거 */
         }
 
-        .sidebar-sort-btn:hover {
-            color: #111827;
+        /* 실제 버튼 역할을 하는 박스 */
+        .sort-menu-wrapper {
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+            margin-right: -4px; 
         }
 
-        /* 사이드바 안쪽 닫기 버튼 (<) */
+        .sort-menu-wrapper:hover {
+            background-color: #e5e7eb; /* 여기에 호버 효과 적용 */
+        }
+
+        /* [수정] 사이드바 닫기 버튼 (완전 위로 이사감) */
         .sidebar-close-btn {
-            width: 26px;
-            height: 26px;
-            border-radius: 999px;
-            border: 1px solid #d0d3dd;
-            background: #ffffff;
+            position: absolute; /* 둥둥 띄우기 */
+            
+            /* ▼▼▼ [미세 조정 구역] 위치를 바꾸려면 여기 숫자를 고치세요 ▼▼▼ */
+            top: 8px;   /* 위에서 얼마나 떨어질지 */
+            right: 14px; /* 오른쪽에서 얼마나 떨어질지 */
+            /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 14px;
-            color: #4a5c8d;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            font-size: 16px;
+            color: #9ca3af;
+            z-index: 10; /* 다른 거 위에 뜨게 */
+            transition: all 0.2s;
             padding: 0;
         }
 
-        /* 사이드바 밖에 떠 있는 열기 버튼 (>) */
+        .sidebar-close-btn:hover {
+            background-color: #e5e7eb;
+            color: #4b5563;
+        }
+
+        /* 열기 버튼 (>) : 사이드바 바깥쪽 */
         .sidebar-open-btn {
             position: absolute;
-            left: 0px;
-            /* 사이드바 너비랑 맞춰서 경계에 붙이기 */
-            top: 150px;
-            /* 채팅 목록 헤더 높이에 맞게 조금 조절해도 됨 */
-            transform: translateX(50%);
-            width: 26px;
-            height: 26px;
-            border-radius: 999px;
-            border: 1px solid #d0d3dd;
+            /* [수정] 닫기 버튼과 높이 맞춤 (14px + 패딩 고려해서 미세 조정) */
+            top: 8px; 
+            left: 2px; 
+            
+            /* 접혔을 때 보기 좋게 살짝 튀어나오게 */
+            transform: translateX(20%); 
+            
+            width: 28px;  /* [크기] 닫기 버튼이랑 똑같이 */
+            height: 28px;
+            
+            border-radius: 6px; /* [모양] 닫기 버튼이랑 똑같이 */
+            border: 1px solid #d1d5db; /* 열기 버튼은 잘 보여야 하니 테두리 유지 */
             background: #ffffff;
-            display: none;
-            /* 기본은 숨김, 접혔을 때만 보이게 */
+            
+            display: none; /* 평소엔 숨김 */
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-size: 14px;
             color: #4a5c8d;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             z-index: 20;
             padding: 0;
+            transition: background-color 0.2s;
         }
 
         .sidebar-open-btn:hover {
-            background-color: #edf0f8;
+            background-color: #f3f4f6;
+            color: #111827;
         }
 
         /* 접힌 상태일 때: 열기 버튼만 보이고, 닫기 버튼은 숨기기 */
@@ -519,40 +569,32 @@
     <div class="main-container">
 
         <aside class="sidebar">
+            <button type="button" id="sidebar-close-btn" class="sidebar-close-btn" aria-label="사이드바 닫기"
+                data-tooltip="사이드바 닫기">
+                &lt;
+            </button>
+
             <a href="{% url 'chat:new_chat' %}" class="new-chat-btn"><span>💬</span> 새 채팅</a>
 
             <div class="sidebar-header">
-                <div class="sidebar-header-left">
-                    <span class="sidebar-header-title">채팅 목록</span>
+                <span class="sidebar-header-title">채팅 목록</span>
 
-                    <div class="sort-menu-wrapper" id="sort-menu-wrapper"
-                        style="position: relative; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                <div class="sort-menu-wrapper" id="sort-menu-wrapper" data-tooltip="목록 정렬 변경">
+                    
+                    <span id="sort-label">내 편집순</span>
 
-                        <button type="button" class="sidebar-sort-btn" id="sort-btn" data-tooltip="목록 정렬 변경">
-                            ⇅
-                        </button>
+                    <button type="button" class="sidebar-sort-btn" id="sort-btn">
+                        ⇅
+                    </button>
 
-                        <span id="sort-label" style="font-size: 11px; color: #888; user-select: none;">
-                            내 편집순
-                        </span>
-
-                        <div class="view-mode-menu" id="sort-menu"
-                            style="width: 140px; left: 0; bottom: auto; top: 25px;">
-                            <div class="mode-item" onclick="sortHistoryList('custom')">내 편집순</div>
-                            <div class="mode-item" onclick="sortHistoryList('name')">가나다순 (보기)</div>
-                            <div class="mode-item" onclick="sortHistoryList('newest')">최신순 (보기)</div>
-                        </div>
+                    <div class="view-mode-menu" id="sort-menu"
+                        style="width: 140px; right: 0; left: auto; bottom: auto; top: 30px;">
+                        <div class="mode-item" onclick="sortHistoryList('custom')">내 편집순</div>
+                        <div class="mode-item" onclick="sortHistoryList('name')">가나다순 (보기)</div>
+                        <div class="mode-item" onclick="sortHistoryList('newest')">최신순 (보기)</div>
                     </div>
                 </div>
-
-                <button type="button" id="sidebar-close-btn" class="sidebar-close-btn" aria-label="사이드바 닫기"
-                    data-tooltip="사이드바 닫기">
-                    &lt;
-                </button>
             </div>
-
-
-
 
             <div id="history-list" class="history-list">
                 {% for hist in history_list %}
@@ -973,7 +1015,7 @@
         })();
 
         // ============================================================
-        // 글로벌 툴팁 로직 (위치 자동 조정)
+        // 글로벌 툴팁 로직 (위치 자동 조정 - 수정됨)
         // ============================================================
         const tooltipEl = document.createElement('div');
         tooltipEl.id = 'global-tooltip';
@@ -991,23 +1033,32 @@
 
             const rect = target.getBoundingClientRect();
 
-            // 채팅 목록 아이템-> 오른쪽에 표시
+            // Case 1: 채팅 목록 아이템 -> 오른쪽 멀리 표시 (기존 유지)
             if (target.classList.contains('history-link') || target.closest('.history-link')) {
-                const left = rect.right + 57; // 오른쪽으로 12px 떨어짐
-                const top = rect.top + (rect.height / 2); // 요소의 수직 중앙
+                const left = rect.right + 57; 
+                const top = rect.top + (rect.height / 2);
 
                 tooltipEl.style.left = left + 'px';
                 tooltipEl.style.top = top + 'px';
-                tooltipEl.style.transform = 'translate(0, -50%)'; // 수직 중앙 정렬
+                tooltipEl.style.transform = 'translate(0, -50%)';
             }
-            // 그 외(버튼 등) -> 위쪽에 표시
-            else {
-                const left = rect.left + (rect.width / 2); // 요소의 수평 중앙
-                const top = rect.top - 8; // 위쪽으로 8px 떨어짐
+            // Case 2: [추가] 사이드바 열기/닫기 버튼 -> 바로 오른쪽 옆에 표시
+            else if (target.id === 'sidebar-close-btn' || target.id === 'sidebar-open-btn' || target.closest('.sort-menu-wrapper')) {
+                const left = rect.right + 9; // 버튼에서 12px 떨어짐
+                const top = rect.top + (rect.height / 2); // 수직 중앙 정렬
 
                 tooltipEl.style.left = left + 'px';
                 tooltipEl.style.top = top + 'px';
-                tooltipEl.style.transform = 'translate(-50%, -100%)'; // 위쪽으로 솟아오르게 정렬
+                tooltipEl.style.transform = 'translate(0, -50%)';
+            }
+            // Case 3: 그 외 (정렬 버튼 등) -> 위쪽에 표시
+            else {
+                const left = rect.left + (rect.width / 2);
+                const top = rect.top - 8;
+
+                tooltipEl.style.left = left + 'px';
+                tooltipEl.style.top = top + 'px';
+                tooltipEl.style.transform = 'translate(-50%, -100%)';
             }
         });
 
@@ -1021,21 +1072,30 @@
         window.addEventListener('scroll', () => tooltipEl.classList.remove('show'), true);
 
         // ============================================================
-        // [추가] 사이드바 정렬 기능
+        // [수정] 사이드바 정렬 기능 (위치 조정 및 자동 닫기)
         // ============================================================
-        const sortWrapper = document.getElementById('sort-menu-wrapper'); // 아까 HTML에 추가한 ID를 찾습니다
+        const sortWrapper = document.getElementById('sort-menu-wrapper'); 
         const sortMenu = document.getElementById('sort-menu');
-        const sortBtn = document.getElementById('sort-btn');
+        // sortBtn은 이제 스타일 제어용으로만 씁니다 (이벤트는 wrapper에 위임)
+        const sortBtn = document.getElementById('sort-btn'); 
 
         if (sortWrapper && sortMenu) {
-            // [핵심] 버튼(sortBtn)이 아니라 '박스 전체(sortWrapper)'에 클릭 이벤트를 겁니다.
             sortWrapper.addEventListener('click', (e) => {
-                e.stopPropagation(); // 부모로 전파 방지
+                e.stopPropagation(); // 상위(sidebar)로 클릭 전파 방지
+
+                // [핵심] 만약 클릭된 요소가 메뉴 항목(.mode-item)이라면?
+                // sortHistoryList 함수가 실행되면서 메뉴를 닫거나 할 텐데,
+                // 여기서 toggle('show')가 또 실행되면 닫혔던 게 다시 열립니다.
+                // 그러니 항목 클릭 시에는 토글을 하지 않고 함수를 종료합니다.
+                if (e.target.closest('.mode-item')) return;
+
+                // 메뉴판 보이기/숨기기 토글
                 sortMenu.classList.toggle('show');
             });
 
             // 외부 클릭 시 닫기
             document.addEventListener('click', (e) => {
+                // 메뉴 wrapper 바깥을 클릭했으면 닫아라
                 if (!e.target.closest('.sort-menu-wrapper')) {
                     sortMenu.classList.remove('show');
                 }
