@@ -1,6 +1,12 @@
 {% load static %}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+<script>
+    marked.setOptions({
+        breaks: true,  // 엔터 한 번만 쳐도 줄바꿈 되게 설정 (중요!)
+        gfm: true      // 깃허브 스타일 마크다운
+    });
+</script>
 
 <div id="ai-chat-widget-container">
     <input type="hidden" id="current-history-id" value="{{ selected_history_id }}">
@@ -418,68 +424,86 @@
         cursor: not-allowed;
     }
 
-    /* ========================================
-     4. 마크다운 스타일
+/* ========================================
+     4. 마크다운 스타일 (계층 구조 강화)
      ========================================
     */
+    /* 공통 초기화 */
     .ai-message h1,
     .ai-message h2,
-    .ai-message h3 {
-        margin-top: 16px;
-        color: #111827;
-    }
-
-    .ai-message h1 {
-        font-size: 1.25em;
-        border-bottom: 2px solid #f3f4f6;
-        padding-bottom: 8px;
-    }
-
-    .ai-message p {
+    .ai-message h3,
+    .ai-message h4 {
+        margin-top: 24px;
         margin-bottom: 12px;
-        line-height: 1.6;
-        color: #374151;
+        font-weight: 700;
+        color: #111827;
+        line-height: 1.4;
     }
 
+    /* 맨 윗줄 제목은 여백 제거 */
+    .ai-message > *:first-child {
+        margin-top: 0 !important;
+    }
+
+    /* [대제목] ## (H2) : 카드 타이틀 */
+    .ai-message h2 {
+        font-size: 1.35rem;       /* 큼직하게 (약 21px) */
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+        color: #2d396b;           /* 브랜드 컬러(남색 계열)로 포인트 */
+    }
+
+    /* [소제목] ### (H3) : 항목 타이틀 */
+    .ai-message h3 {
+        font-size: 1.05rem;       /* 본문보다 살짝 큰 정도 (약 16~17px) */
+        color: #4b5563;           /* 진한 회색 */
+        margin-top: 20px;         /* 항목 간격 확보 */
+        margin-bottom: 8px;
+    }
+
+    /* 본문 텍스트 */
+    .ai-message p {
+        margin-bottom: 10px;
+        line-height: 1.65;
+        color: #374151;
+        font-size: 0.95rem;
+    }
+
+    /* [강조] **굵게** 스타일 */
+    .ai-message strong,
+    .ai-message b {
+        font-weight: 700;
+        color: #111827;           /* 완전 검정으로 가독성 UP */
+        background: rgba(74, 92, 141, 0.08); /* 브랜드 컬러 배경 살짝 */
+        padding: 0 4px;           /* 좌우 여백 */
+        border-radius: 4px;       /* 둥글게 */
+    }
+
+    /* 리스트 스타일 */
+    .ai-message ul, 
+    .ai-message ol {
+        margin: 8px 0 16px 0;
+        padding-left: 24px;
+    }
+    
+    .ai-message li {
+        margin-bottom: 6px;
+        line-height: 1.6;
+    }
+    
+    /* 리스트 안의 문단 간격 조절 */
+    .ai-message li p {
+        margin-bottom: 4px;
+    }
+
+    /* 코드 블록 & 인용문 등 나머지 스타일은 기존 유지... */
     .ai-message code {
         background: #f3f4f6;
         color: #e11d48;
-        padding: 2px 6px;
+        padding: 2px 5px;
         border-radius: 4px;
         font-size: 0.9em;
         font-family: 'Menlo', monospace;
-    }
-
-    .ai-message pre {
-        background: #1e293b;
-        color: #f8fafc;
-        padding: 12px;
-        border-radius: 8px;
-        overflow-x: auto;
-        margin: 12px 0;
-    }
-
-    .ai-message pre code {
-        background: transparent;
-        color: inherit;
-        padding: 0;
-    }
-
-    .ai-message ul {
-        padding-left: 20px;
-        color: #374151;
-    }
-
-    /* ========================================
-     5. 카드 뷰 스타일 (Capsule/Pill Footer)
-     ========================================
-    */
-    .card-container {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 100%;
-        /* 높이도 부모에 맞춤 */
     }
 
     /* ========================================
@@ -665,6 +689,16 @@
             opacity: 1;
         }
     }
+
+    /* 중지 버튼 스타일 (빨간색) */
+    #send-btn.stop-mode {
+        background-color: #fa5252;
+        color: white;
+    }
+    #send-btn.stop-mode:hover {
+        background-color: #e03131;
+    }
+
 </style>
 
 <script>
@@ -752,11 +786,12 @@
 
         // 이 메시지를 감싸고 있는 말풍선(.ai-message)을 찾습니다.
         const messageBubble = targetDiv.closest('.ai-message');
+        const cleanMarkdown = preprocessMarkdown(markdownText);
 
         // 1. Full Mode
         if (currentViewMode === 'full') {
             if (messageBubble) messageBubble.classList.remove('full-width'); // 넓이 원상복구
-            targetDiv.innerHTML = DOMPurify.sanitize(marked.parse(markdownText));
+            targetDiv.innerHTML = DOMPurify.sanitize(marked.parse(cleanMarkdown));
         }
 
         // 2. Expand Mode (Clean Style)
@@ -804,9 +839,7 @@
             if (parts.length <= 1) {
                 // 1. 꽉 찬 너비(full-width) 해제 -> 내용만큼만 말풍선 차지
                 if (messageBubble) messageBubble.classList.remove('full-width');
-
-                // 2. 그냥 마크다운 렌더링하고 끝내기
-                targetDiv.innerHTML = DOMPurify.sanitize(marked.parse(markdownText));
+                targetDiv.innerHTML = DOMPurify.sanitize(marked.parse(cleanMarkdown));
                 return;
             }
 
@@ -815,7 +848,11 @@
             // ============================================================
             if (messageBubble) messageBubble.classList.add('full-width');
 
-            const pages = parts.map(part => DOMPurify.sanitize(marked.parse(part)));
+            const pages = parts.map(part => {
+                const cleanPart = preprocessMarkdown(part);
+                return DOMPurify.sanitize(marked.parse(cleanPart));
+            });            
+            
             let currentPage = 0;
 
             const container = document.createElement('div');
@@ -890,28 +927,65 @@
     });
 
     // ============================================================
-    // 4. 메시지 전송 및 기본 로직
+    // [추가] 마크다운 전처리 함수 (별표 강제 변환기)
+    // ============================================================
+    function preprocessMarkdown(text) {
+        if (!text) return "";
+        
+        // 1. **굵게** 처리가 씹히는 문제 해결 (괄호, 특수문자 포함돼도 강제로 태그 변환)
+        // 정규식 설명: 별표(**)로 감싸진 내용을 찾아 <strong> 태그로 바꿈 (여러 줄 포함 가능)
+        let processed = text.replace(/\*\*(.*?)\*\*/gs, '<strong>$1</strong>');
+        
+        // 2. 혹시 *이탤릭* 도 문제라면 여기서 처리 가능 (필요시 주석 해제)
+        processed = processed.replace(/\*(.*?)\*/gs, '<em>$1</em>');
+
+        return processed;
+    }
+
+// [전역 변수] 중지 컨트롤러
+    let abortController = null; 
+
+    // ============================================================
+    // 4. 메시지 전송 및 기본 로직 (수정본)
     // ============================================================
     async function sendMessage(event) {
         event.preventDefault();
+
+        // [수정 1] 경고창 없이 즉시 중단
+        if (abortController) {
+            // 사용자에게 묻지 않고 바로 끊어버립니다.
+            abortController.abort(); 
+            abortController = null;
+            return;
+        }
+
         const text = userInput.value.trim();
         const historyId = historyIdInput.value;
         if (!text || !historyId) return;
 
-        const currentUserRow = appendMessage('user', text);
+        // [수정 2] UI 잠금(setUiLock) 제거 & 버튼만 변경
+        // setUiLock(true);  <-- 삭제함
+        
+        sendBtn.textContent = "■ 중지";
+        sendBtn.classList.add("stop-mode");
+        userInput.disabled = true;
 
-        // 입력창 초기화 및 높이 리셋
+        // 취소 신호 생성
+        abortController = new AbortController(); 
+        const signal = abortController.signal;
+
+        const currentUserRow = appendMessage('user', text);
+        
         userInput.value = '';
         userInput.style.height = 'auto';
-        userInput.disabled = true;
-        sendBtn.disabled = true;
-
         forceScrollToBottom();
 
         try {
             const response = await fetch('/chat/api/stream/', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: text, history_id: historyId })
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text, history_id: historyId }),
+                signal: signal 
             });
 
             if (!response.ok) throw new Error(await response.text());
@@ -920,15 +994,14 @@
             const decoder = new TextDecoder();
 
             let currentAiBubble = null;
-            let currentRawData = null; // [추가] 원본 저장소 참조 변수
+            let currentRawData = null;
             let currentContent = "";
-
-            // [최적화] 렌더링 대기 중인지 체크하는 플래그
             let renderPending = false;
 
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
+                
                 const chunk = decoder.decode(value, { stream: true });
                 const lines = chunk.split('\n');
 
@@ -937,65 +1010,88 @@
                     try {
                         const data = JSON.parse(line);
 
+                        // [기존 코드] 사용자 메시지 ID 처리
                         if (data.type === 'user_message_id') {
-                            if (currentUserRow) {
+                             if (currentUserRow) {
                                 currentUserRow.id = 'row-' + data.chat_id;
                                 addDeleteButton(currentUserRow, data.chat_id);
                             }
                         }
+                        // [기존 코드] 토큰(글자) 처리
                         else if (data.type === 'token') {
-                            removeToolStatus();
-
-                            if (!currentAiBubble) {
+                             removeToolStatus();
+                             if (!currentAiBubble) {
                                 currentAiBubble = createMessageBubble('ai');
                                 const row = currentAiBubble.closest('.chat-row');
                                 if (row) currentRawData = row.querySelector('.raw-data');
                             }
-
-                            // 1. 데이터는 실시간으로 계속 쌓아둡니다. (누락 방지)
                             currentContent += data.content;
 
-                            // 2. [최적화 핵심] 화면 그리기는 '브라우저가 한가할 때' 한 번만 요청합니다.
                             if (!renderPending) {
                                 renderPending = true;
                                 requestAnimationFrame(() => {
                                     if (currentAiBubble) {
-                                        currentAiBubble.innerHTML = DOMPurify.sanitize(marked.parse(currentContent));
+                                        const safeContent = preprocessMarkdown(currentContent);
+                                        currentAiBubble.innerHTML = DOMPurify.sanitize(marked.parse(safeContent));
                                         if (currentRawData) currentRawData.textContent = currentContent;
                                         scrollToBottom();
                                     }
-                                    renderPending = false; // 다 그렸으니 다음 요청 받음
+                                    renderPending = false;
                                 });
                             }
-
-                        } else if (data.type === 'tool_call') {
+                        } 
+                        // [기존 코드] 도구 호출/제목 등 처리
+                        else if (data.type === 'tool_call') {
                             createToolStatus(data.tool_name);
                         } else if (data.type === 'history_title') {
                             if (typeof updateHistoryTitle === 'function')
                                 updateHistoryTitle(data.history_id, data.title);
                         }
-
-                        // 토큰 외의 이벤트는 즉시 스크롤 (반응성 유지)
+                        
+                        // ========================================================
+                        // [추가해야 할 부분] 에러 메시지 처리 (이게 없어서 조용했던 것!)
+                        // ========================================================
+                        else if (data.type === 'error') {
+                            removeToolStatus();
+                            const errorRow = createMessageBubble('ai');
+                            errorRow.innerHTML = "⚠️ <b>서버 오류:</b> " + data.message;
+                            scrollToBottom();
+                        }
+                        
                         if (data.type !== 'token') scrollToBottom();
 
                     } catch (e) { }
                 }
             }
-
-            // 스트리밍 끝난 후 최종 렌더링 (카드 모드 등을 위해)
+            
             if (currentAiBubble && currentContent) {
                 renderContentByMode(currentAiBubble, currentContent);
             }
 
         } catch (error) {
-            removeToolStatus();
-            // 에러 메시지는 raw-data 저장 굳이 안 해도 됨
-            const errorRow = createMessageBubble('ai');
-            errorRow.innerHTML = "⚠️ 오류 발생: " + error.message;
+            // [중단 시 처리]
+            if (error.name === 'AbortError') {
+                const stopRow = createMessageBubble('ai');
+                stopRow.innerHTML = "<span style='color:#fa5252; font-size:13px;'>⛔ 답변 생성이 중단되었습니다.</span>";
+            } else {
+                removeToolStatus();
+                const errorRow = createMessageBubble('ai');
+                errorRow.innerHTML = "⚠️ 오류 발생: " + error.message;
+            }
         } finally {
+            // [수정 3] 종료 시 복구 로직 (setUiLock 제거됨)
             removeToolStatus();
-            userInput.disabled = false; sendBtn.disabled = false;
-            userInput.focus(); scrollToBottom();
+            abortController = null; 
+            
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            sendBtn.textContent = "전송"; 
+            sendBtn.classList.remove("stop-mode");
+            
+            // setUiLock(false); <-- 삭제함
+            
+            userInput.focus(); 
+            scrollToBottom();
         }
     }
 
@@ -1048,10 +1144,15 @@
             el.querySelector('.chat-message').innerText = text;
         } else {
             // ai는 msgDiv를 반환
-            el.innerHTML = DOMPurify.sanitize(marked.parse(text));
-            // 보기 모드(카드/한번에/아코디언) 적용
+            const safeContent = preprocessMarkdown(text);
+            el.innerHTML = DOMPurify.sanitize(marked.parse(safeContent));
+            
             if (typeof renderContentByMode === 'function') {
-                renderContentByMode(el);
+                // renderContentByMode 내부에서도 marked.parse를 쓴다면
+                // 그 함수 안에도 preprocessMarkdown을 적용하거나,
+                // 이미 변환된 HTML을 넘기는 구조로 활용해야 합니다.
+                // (일단 여기서는 DOM 업데이트용으로 둡니다)
+                renderContentByMode(el, text);
             }
         }
 

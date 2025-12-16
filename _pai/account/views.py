@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.urls import reverse
+from chat.models import ChatHistory
 
 from .forms import SignupForm, LoginForm, ProfileUpdateForm
 
@@ -15,6 +16,21 @@ def signup(request):
         if form.is_valid():
             user = form.save()  # User 모델에 저장됨 (비밀번호 자동 암호화. sha256)
             nickname = form.cleaned_data.get("nickname")
+
+            # ================================================================
+            # [추가] 회원가입 즉시 게스트 데이터를 새 아이디로 이관
+            # ================================================================
+            # 현재 게스트 세션 ID 확인
+            guest_session_key = request.session.session_key
+
+            if guest_session_key:
+                # 게스트가 남긴 흔적(세션ID 일치 + 주인 없는 데이터)을 찾아서
+                # 방금 가입한 따끈따끈한 user에게 소유권을 넘깁니다.
+                ChatHistory.objects.filter(
+                    session_id=guest_session_key, 
+                    user__isnull=True
+                ).update(user=user)
+            # ================================================================
 
             return render(
                 request, "account/signup_success.html", {"username": nickname}
