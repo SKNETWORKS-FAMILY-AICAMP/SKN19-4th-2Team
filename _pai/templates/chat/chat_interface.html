@@ -559,12 +559,47 @@
         #global-tooltip.show {
             opacity: 1;
         }
+
+        /* ========================================
+         [추가] 토스트 알림 (Snackbar) 스타일
+         ========================================
+        */
+        #pai-toast {
+            visibility: hidden; /* 평소엔 숨김 */
+            min-width: 300px;
+            background-color: #333333; /* 검은색 배경 */
+            color: #ffffff; /* 흰색 글씨 */
+            text-align: center;
+            border-radius: 50px; /* 둥근 알약 모양 */
+            padding: 12px 24px;
+            
+            position: fixed; /* 화면에 고정 */
+            z-index: 9999; /* 제일 위에 */
+            left: 50%;
+            bottom: 30px; /* 화면 아래쪽 */
+            transform: translateX(-50%); /* 정확히 가운데 정렬 */
+            
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out;
+        }
+
+        /* 보일 때 적용되는 클래스 */
+        #pai-toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px; /* 살짝 위로 떠오르는 효과 */
+        }
+
     </style>
 </head>
 
 <body class="chat-page">
 
-    {% include 'layout/navber.html' %}
+    {% include 'layout/navbar.html' %}
 
     <div class="main-container">
 
@@ -663,6 +698,8 @@
             </div>
         </div>
     </div>
+
+    <div id="pai-toast">이전 채팅의 답변 생성이 중단되었습니다.</div>
 
 
     <script>
@@ -1199,6 +1236,52 @@
                 console.error(e);
             }
         }
+        
+        // ============================================================
+        // [추가] 토스트 알림 & 이탈 감지 로직
+        // ============================================================
+        
+        // 1. 토스트 메시지 띄우기 함수
+        function showPaiToast(message) {
+            const toast = document.getElementById("pai-toast");
+            if (!toast) return;
+
+            toast.textContent = message;
+            toast.className = "show"; // 보이게 설정
+
+            // 3초 뒤에 사라짐
+            setTimeout(function(){ 
+                toast.className = toast.className.replace("show", ""); 
+            }, 3000);
+        }
+
+        // 2. 페이지 로드 시 확인: "방금 답변 중에 도망쳐서 왔나요?"
+        document.addEventListener('DOMContentLoaded', () => {
+            // 저장된 플래그 확인
+            const stopMsg = sessionStorage.getItem('pai_stop_toast');
+            
+            if (stopMsg) {
+                // 플래그가 있으면 토스트 띄우고, 흔적 지우기 (일회성)
+                showPaiToast(stopMsg);
+                sessionStorage.removeItem('pai_stop_toast');
+            }
+
+            // 3. 사이드바 링크 클릭 감지 리스너 등록
+            // (채팅 목록 링크 + 새 채팅 버튼)
+            const links = document.querySelectorAll('.history-link, .new-chat-btn');
+            
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    // 전역 변수 abortController가 존재한다는 건 = 답변 생성 중이라는 뜻
+                    if (typeof abortController !== 'undefined' && abortController) {
+                        // 다음 페이지에서 띄울 메시지를 저장해둠
+                        sessionStorage.setItem('pai_stop_toast', '이전 채팅의 답변 생성이 중단되었습니다.');
+                        
+                        // (참고: 클릭을 막지 않음. 자연스럽게 이동하면 브라우저가 알아서 연결을 끊음)
+                    }
+                });
+            });
+        });
 
     </script>
 
