@@ -1,11 +1,27 @@
-/* 네비게이션 바 전용 CSS - main_style.css와 동일한 스타일 적용 */
+/* navbar.css */
 
-/* chat 페이지에서 body에 padding-top 추가 */
+/* chat 페이지 관련 스타일은 유지 */
 .chat-page {
     padding-top: 60px !important;
 }
 
-/* main-container 상단 여백 추가 */
 .chat-page .main-container {
     margin-top: 0 !important;
+}
+
+/* 네비게이션 바 컨테이너 수정 */
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    /* 로고와 메뉴를 양 끝으로 밀어냄 */
+    align-items: center;
+
+    width: 100%;
+    /* main_style.css의 1200px 제한을 무시하고 화면 전체를 쓰도록 강제함 */
+    max-width: 100% !important;
+
+    /* 양 끝 여백: 이 값을 줄일수록(예: 20px) 더 끝으로 붙습니다 */
+    padding: 0 30px;
+
+    box-sizing: border-box;
 }

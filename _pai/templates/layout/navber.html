@@ -1,4 +1,5 @@
 {% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}">
 <nav class="custom-navbar">
     <div class="navbar-container">
         <a class="navbar-logo" href="{% url 'main:index' %}">
@@ -6,14 +7,14 @@
         </a>
         <div class="navbar-menu">
             {% if user.is_authenticated %}
-                <!-- 로그인된 상태 -->
-                <span class="nav-welcome">👤 {{ user.first_name|default:user.username }}님 환영합니다</span>
-                <a href="{% url 'account:myinfo' %}" class="nav-link">마이페이지</a>
-                <a href="{% url 'account:logout' %}" class="nav-link">로그아웃</a>
+            <!-- 로그인된 상태 -->
+            <span class="nav-welcome">👤 {{ user.first_name|default:user.username }}님 환영합니다</span>
+            <a href="{% url 'account:myinfo' %}" class="nav-link">마이페이지</a>
+            <a href="{% url 'account:logout' %}" class="nav-link">로그아웃</a>
             {% else %}
-                <!-- 로그인 안된 상태 -->
-                <a href="{% url 'account:login' %}" class="nav-link">로그인</a>
-                <a href="{% url 'account:signup' %}" class="nav-link">회원가입</a>
+            <!-- 로그인 안된 상태 -->
+            <a href="{% url 'account:login' %}" class="nav-link">로그인</a>
+            <a href="{% url 'account:signup' %}" class="nav-link">회원가입</a>
             {% endif %}
         </div>
     </div>

@@ -1,37 +1,46 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Pai - Patent AI{% endblock %}</title>
-    
+
     <!-- 공통 CSS -->
     <link rel="stylesheet" href="{% static 'css/common.css' %}">
-    
+
     <style>
         body {
             background-color: #ffffff;
             font-family: 'Pretendard', sans-serif;
             display: flex;
-            flex-direction: column; /* 세로 방향으로 배치 */
+            flex-direction: column;
+            /* 세로 방향으로 배치 */
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* height 대신 min-height 사용 */
+            min-height: 100vh;
+            /* height 대신 min-height 사용 */
             margin: 0;
         }
 
         .auth-container {
-            width: 344px; /* 430px의 80% */
-            padding: 32px 24px; /* 40px 30px의 80% */
+            width: 344px;
+            /* 430px의 80% */
+            padding: 32px 24px;
+            /* 40px 30px의 80% */
             border: 2px solid #2d396b;
-            border-radius: 24px; /* 30px의 80% */
+            border-radius: 24px;
+            /* 30px의 80% */
             text-align: center;
+            margin-top: 20px;
         }
 
         .logo-img {
-            width: 160px; /* 200px의 80% */
-            margin-bottom: 16px; /* 20px의 80% */
+            width: 160px;
+            /* 200px의 80% */
+            margin-bottom: 16px;
+            /* 20px의 80% */
             cursor: pointer;
             transition: opacity 0.2s ease;
         }
@@ -41,38 +50,49 @@
         }
 
         .form-group {
-            margin-bottom: 12px; /* 15px의 80% */
+            margin-bottom: 12px;
+            /* 15px의 80% */
             text-align: left;
         }
 
         label {
             color: #3f4a78;
             display: block;
-            margin-bottom: 4px; /* 5px의 80% */
-            font-size: 11px; /* 14px의 80% */
+            margin-bottom: 4px;
+            /* 5px의 80% */
+            font-size: 11px;
+            /* 14px의 80% */
             font-weight: 600;
         }
 
         .input-box {
             box-sizing: border-box;
             width: 100%;
-            padding: 10px; /* 13px의 80% */
-            border-radius: 20px; /* 25px의 80% */
+            padding: 10px;
+            /* 13px의 80% */
+            border-radius: 20px;
+            /* 25px의 80% */
             border: 1px solid #c9c9c9;
-            margin: 8px 0; /* 10px의 80% */
+            margin: 8px 0;
+            /* 10px의 80% */
             outline: none;
-            font-size: 12px; /* 15px의 80% */
+            font-size: 12px;
+            /* 15px의 80% */
         }
 
         .primary-btn {
             width: 100%;
-            padding: 11px; /* 14px의 80% */
-            border-radius: 20px; /* 25px의 80% */
+            padding: 11px;
+            /* 14px의 80% */
+            border-radius: 20px;
+            /* 25px의 80% */
             background-color: #3f4a78;
             color: white;
             border: none;
-            font-size: 13px; /* 16px의 80% */
-            margin-top: 12px; /* 15px의 80% */
+            font-size: 13px;
+            /* 16px의 80% */
+            margin-top: 12px;
+            /* 15px의 80% */
             cursor: pointer;
         }
 
@@ -82,13 +102,17 @@
 
         .secondary-btn {
             width: 100%;
-            padding: 11px; /* 14px의 80% */
-            border-radius: 20px; /* 25px의 80% */
+            padding: 11px;
+            /* 14px의 80% */
+            border-radius: 20px;
+            /* 25px의 80% */
             background-color: #f2f2f2;
             color: #3f3f3f;
             border: none;
-            font-size: 12px; /* 15px의 80% */
-            margin-top: 8px; /* 10px의 80% */
+            font-size: 12px;
+            /* 15px의 80% */
+            margin-top: 8px;
+            /* 10px의 80% */
             cursor: pointer;
         }
 
@@ -98,12 +122,15 @@
 
         .guest-btn {
             width: 100%;
-            padding: 11px; /* 14px의 80% */
-            border-radius: 20px; /* 25px의 80% */
+            padding: 11px;
+            /* 14px의 80% */
+            border-radius: 20px;
+            /* 25px의 80% */
             background-color: #e8edff;
             color: #3f4a78;
             border: none;
-            font-size: 12px; /* 15px의 80% */
+            font-size: 12px;
+            /* 15px의 80% */
             cursor: pointer;
         }
 
@@ -114,7 +141,8 @@
         .line-wrap {
             display: flex;
             align-items: center;
-            margin: 14px 0; /* 18px의 80% */
+            margin: 14px 0;
+            /* 18px의 80% */
         }
 
         .line {
@@ -125,10 +153,14 @@
 
         .error-message {
             color: #d32f2f;
-            font-size: 12px; /* 10px에서 12px로 증가 */
-            font-weight: 600; /* 볼드 추가 */
-            margin-top: 4px; /* 5px의 80% */
-            min-height: 16px; /* 최소 높이 설정으로 레이아웃 안정화 */
+            font-size: 12px;
+            /* 10px에서 12px로 증가 */
+            font-weight: 600;
+            /* 볼드 추가 */
+            margin-top: 4px;
+            /* 5px의 80% */
+            min-height: 16px;
+            /* 최소 높이 설정으로 레이아웃 안정화 */
         }
 
         /* 메시지 타입별 스타일 */
@@ -178,8 +210,10 @@
             color: #777;
             font-weight: 400;
             margin-top: 40px;
-            width: 100%; /* 전체 너비 사용 */
-            flex-shrink: 0; /* flex 축소 방지 */
+            width: 100%;
+            /* 전체 너비 사용 */
+            flex-shrink: 0;
+            /* flex 축소 방지 */
         }
 
         .account-footer p {
@@ -187,6 +221,7 @@
         }
     </style>
 </head>
+
 <body>
     {% if error %}
     <script>
@@ -204,8 +239,9 @@
         {% block content %}
         {% endblock %}
     </div>
-<footer class="footer-notice account-footer">
-    <p>&copy; 2025 PaI &ndash; Patent AI Assistant. All rights reserved.</p>
-</footer>
+    <footer class="footer-notice account-footer">
+        <p>&copy; 2025 PaI &ndash; Patent AI Assistant. All rights reserved.</p>
+    </footer>
 </body>
+
 </html>
