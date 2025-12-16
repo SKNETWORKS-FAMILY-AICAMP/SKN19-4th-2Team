@@ -19,6 +19,10 @@ class ChatHistory(models.Model):
 
     # [추가] 비회원 식별용 세션 ID
     session_id = models.CharField(max_length=100, null=True, blank=True, db_index=True)
+
+    # [추가] 즐겨찾기(고정) 여부 필드
+    is_pinned = models.BooleanField(default=False)
+    
     order_num = models.IntegerField(db_column="order", default=0)
     description = models.CharField(max_length=255, default="New Chat")
     created_at = models.DateTimeField(auto_now_add=True)

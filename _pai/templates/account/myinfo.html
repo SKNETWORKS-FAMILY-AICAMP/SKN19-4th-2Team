@@ -11,7 +11,8 @@
 
 <div class="form-group">
     <label>닉네임</label>
-    <div class="input-box" style="background-color: #f8f9fa; cursor: not-allowed;">{{ user.first_name|default:"설정되지 않음" }}</div>
+    <div class="input-box" style="background-color: #f8f9fa; cursor: not-allowed;">{{ user.first_name|default:"설정되지않음"}}
+    </div>
 </div>
 
 {% if success_message %}
@@ -23,19 +24,19 @@
 <!-- 별명 수정 폼 -->
 <form method="POST">
     {% csrf_token %}
-    
+
     <div class="form-group">
         <label for="id_nickname">새 별명</label>
         {{ profile_form.nickname }}
         {% if profile_form.nickname.errors %}
-            <div class="error-message">
-                {% for error in profile_form.nickname.errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
-            </div>
+        <div class="error-message">
+            {% for error in profile_form.nickname.errors %}
+            <div>{{ error }}</div>
+            {% endfor %}
+        </div>
         {% endif %}
     </div>
-    
+
     <button type="submit" name="update_nickname" class="primary-btn">별명 변경</button>
 </form>
 
@@ -46,43 +47,46 @@
 <!-- 비밀번호 변경 폼 -->
 <form method="POST">
     {% csrf_token %}
-    
+
     <div class="form-group">
-        <label for="id_old_password">현재 비밀번호</label>
-        {{ password_form.old_password }}
+        <label for="{{ password_form.old_password.id_for_label }}">현재 비밀번호</label>
+        <input type="password" name="{{ password_form.old_password.name }}"
+            id="{{ password_form.old_password.id_for_label }}" class="input-box" required>
         {% if password_form.old_password.errors %}
-            <div class="error-message">
-                {% for error in password_form.old_password.errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
-            </div>
+        <div class="error-message">
+            {% for error in password_form.old_password.errors %}
+            <div>{{ error }}</div>
+            {% endfor %}
+        </div>
         {% endif %}
     </div>
-    
+
     <div class="form-group">
-        <label for="id_new_password1">새 비밀번호</label>
-        {{ password_form.new_password1 }}
+        <label for="{{ password_form.new_password1.id_for_label }}">새 비밀번호</label>
+        <input type="password" name="{{ password_form.new_password1.name }}"
+            id="{{ password_form.new_password1.id_for_label }}" class="input-box" required>
         {% if password_form.new_password1.errors %}
-            <div class="error-message">
-                {% for error in password_form.new_password1.errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
-            </div>
+        <div class="error-message">
+            {% for error in password_form.new_password1.errors %}
+            <div>{{ error }}</div>
+            {% endfor %}
+        </div>
         {% endif %}
     </div>
-    
+
     <div class="form-group">
-        <label for="id_new_password2">새 비밀번호 확인</label>
-        {{ password_form.new_password2 }}
+        <label for="{{ password_form.new_password2.id_for_label }}">새 비밀번호 확인</label>
+        <input type="password" name="{{ password_form.new_password2.name }}"
+            id="{{ password_form.new_password2.id_for_label }}" class="input-box" required>
         {% if password_form.new_password2.errors %}
-            <div class="error-message">
-                {% for error in password_form.new_password2.errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
-            </div>
+        <div class="error-message">
+            {% for error in password_form.new_password2.errors %}
+            <div>{{ error }}</div>
+            {% endfor %}
+        </div>
         {% endif %}
     </div>
-    
+
     <button type="submit" name="update_password" class="primary-btn">비밀번호 변경</button>
 </form>
 
@@ -90,21 +94,23 @@
     <div class="line"></div>
 </div>
 
-<button type="button"
-        class="secondary-btn"
-        onclick="location.href='{{ chat_interface_url }}'">
+<button type="button" class="secondary-btn" onclick="location.href='{{ chat_interface_url }}'">
     채팅으로 돌아가기
 </button>
 
-<div style="margin-top: 30px; padding: 20px; border: 2px solid #dc3545; border-radius: 20px; background-color: #fff5f5;">
+<div
+    style="margin-top: 30px; padding: 20px; border: 2px solid #dc3545; border-radius: 20px; background-color: #fff5f5;">
     <h3 style="color: #dc3545; font-size: 14px; font-weight: 700; margin-bottom: 8px;">위험 구역</h3>
-    <p style="color: #721c24; font-size: 11px; margin-bottom: 12px; line-height: 1.5;">회원탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.</p>
-    <button type="button" style="padding: 8px 16px; background-color: #dc3545; color: white; border: none; border-radius: 15px; font-size: 11px; font-weight: 600; cursor: pointer;" onclick="confirmWithdraw()">회원탈퇴</button>
+    <p style="color: #721c24; font-size: 11px; margin-bottom: 12px; line-height: 1.5;">회원탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.
+    </p>
+    <button type="button"
+        style="padding: 8px 16px; background-color: #dc3545; color: white; border: none; border-radius: 15px; font-size: 11px; font-weight: 600; cursor: pointer;"
+        onclick="confirmWithdraw()">회원탈퇴</button>
 </div>
 
 <script>
-function confirmWithdraw() {
-    location.href = "{% url 'account:withdraw' %}";
-}
+    function confirmWithdraw() {
+        location.href = "{% url 'account:withdraw' %}";
+    }
 </script>
 {% endblock %}
