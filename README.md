@@ -219,6 +219,45 @@
 ## 5. 요구사항 정의서 (문서 캡처본)
 
 ## 6. 화면설계서 (문서 캡처본)
+<p align="center">
+    <img src="images/UI_1.png" alt="UI">
+</p>
+
+<p align="center">
+    <img src="images/UI_2.png" alt="UI">
+</p>
+
+<p align="center">
+    <img src="images/UI_3.png" alt="UI">
+</p>
+
+<p align="center">
+    <img src="images/UI_4.png" alt="UI">
+</p>
+
+<p align="center">
+    <img src="images/UI_5.png" alt="UI">
+</p>
+
+<p align="center">
+    <img src="images/UI_6.png" alt="UI">
+</p>
+
+<p align="center">
+    <img src="images/UI_7.png" alt="UI">
+</p>
+
+<p align="center">
+    <img src="images/UI_8.png" alt="UI">
+</p>
+
+<p align="center">
+    <img src="images/UI_9.png" alt="UI">
+</p>
+
+<p align="center">
+    <img src="images/UI_10.png" alt="UI">
+</p>
 
 ## 7. WBS
 
