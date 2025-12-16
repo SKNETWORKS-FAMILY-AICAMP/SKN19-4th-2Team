@@ -361,24 +361,24 @@
     <img src="images/mypage_nickname_success.png" width="20%" style="display:inline-block;">
 </p>
 
-#### 9-1-2. 회원가입 성공/실패
+#### 9-1-2. 회원가입 실패
 
 <p align="center">
-    <img src="images/signup_success.png" width="30%" style="display:inline-block; margin-right:10%;">
-    <img src="images/signup_fail.png" width="30%" style="display:inline-block;">
+    <img src="images/signup_fail.png" width="30%">
 </p>
 
 #### 9-1-3. 회원탈퇴
 
 <p align="center">
-    <img src="images/withdraw1.png" width="30%" style="display:inline-block; margin-right:10%;">
     <img src="images/withdraw2.png" width="30%" style="display:inline-block; margin-right:10%;">
     <img src="images/withdraw_success.png" width="30%" style="display:inline-block;">
 </p>
 
 ### 9-2. 시연 
 
-![시연 미리보기](images/demo.gif) 
+<p align="center">
+    <img src="images/demo.gif">
+</p>
 
 ## 10. 한 줄 회고
 | 이름 | 회고 |
