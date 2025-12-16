@@ -283,8 +283,7 @@
 |:--------:|------------|------------|-----------|
 | 계정 관리 | 회원가입 시 DB 등록 여부 | 신규 회원 정보 입력 | user 테이블에 회원 정보 정상 등록 |
 | 계정 관리 | 로그인 성공 시 유저 정보 매칭 | 정상 ID / PW 입력 | 로그인 성공 및 해당 유저 정보 매칭 |
-| 계정 관리 | 마이페이지 접속 | 로그인 후 마이페이지 접근 | 유저 정보 정상 조회 |
-| 계정 관리 | 마이페이지 정보 수정 | 닉네임, 이메일 수정 | 수정 내용이 DB에 반영 |
+| 계정 관리 | 마이페이지 접속, 정보 수정 | 로그인 후 마이페이지 접근, 수정 시 내용 DB에 반영 | 유저 정보 정상 조회 |
 | 계정 관리 | 회원 탈퇴 처리 | 회원 탈퇴 요청 | user, chat, chat_history 관련 데이터 모두 삭제 |
 | 회원 채팅 | 채팅 페이지 접속 | 로그인 후 채팅 페이지 이동 | chat history 및 유저 nickname 정상 로드 |
 | 회원 채팅 | 채팅 응답 처리 | 채팅 메시지 입력 | LLM 응답 정상 수신 |
@@ -304,13 +303,21 @@
 
 #### 8-2-1. 계정 관리 기능 테스트 결과
 
-| 요구사항 ID   | 테스트 내용                          | INPUT                         | 테스트 결과                                    |                                   
-|:-------------:|:-------------------------------------:|:-----------------------------:|:--------------------------------------------------:|
+| 요구사항 ID   | 테스트 내용                          | INPUT                         | 테스트 결과 (전)                                    | 테스트 결과 (후)                                    |
+|:-------------:|:-------------------------------------:|:-----------------------------:|:--------------------------------------------------:|:--------------------------------------------------:|
+| REQ_USER_001 | 아이디, 비밀번호, 이름을 입력받아 계정을 생성하고 DB에 저장 | user=new 회원 가입 | <img src="images/auth_user1.jpg"> | <img src="images/auth_user2.jpg"> |
+| REQ_USER_002 | 로그인 성공 시 유저 정보 매칭 | user=new로 로그인 | | <img src="images/auth_user3.jpg">  |
+| REQ_USER_005 | 마이페이지에서 유저 정보 변경 검증 | user=new의 별명을 new에서 hello로 변경  | <img src="images/auth_user4.jpg"> | <img src="images/auth_user5.jpg"> |
+| REQ_USER_006 | 회원 탈퇴 처리 | user=new 회원 탈퇴 요청 | <img src="images/auth_user4.jpg"> | <img src="images/auth_user6.jpg"> |
 
 #### 8-2-2. 회원 채팅 관리 기능 테스트 결과
 
-| 요구사항 ID   | 테스트 내용                          | INPUT                         | 테스트 결과                                    |                                   
-|:-------------:|:-------------------------------------:|:-----------------------------:|:--------------------------------------------------:|
+| 요구사항 ID   | 테스트 내용                          | INPUT                         | 테스트 결과 (전)                                    | 테스트 결과 (후)                                    |
+|:-------------:|:-------------------------------------:|:-----------------------------:|:--------------------------------------------------:|:--------------------------------------------------:|
+| REQ_CHAT_002 | 사용자의 과거 대화 내역을 사이드바에서 리스트 형태로 조회 | UserID=5 유저가 로그인 후 채팅 페이지로 이동 | <img src="images/chat_user_1.png"> | <img src="images/chat_user_2.png"> |
+| REQ_CHAT_007 | 사용자의 이름이 채팅 화면 상단과 챗봇에 안정적으로 전달됨 | ‘테스트’란 이름을 가진 유저가 [새 대화] 버튼 클릭 | | <img src="images/chat_user_3.png"> |
+| REQ_CHAT_008 | 사용자의 과거 대화 내역을 기억해 응답 | 응답으로 제공한 출원번호에 대한 추가 질문 “1020230101855가 왜 유사하다고 했었지?” | | <img src="images/chat_user_4.png"> |
+
 
 #### 8-2-3. 비회원 채팅 관리 기능 테스트 결과
 
@@ -349,27 +356,29 @@
 #### 9-1-2. 마이페이지 정보 수정 성공/실패
 
 <p align="center">
-    <img src="images/mypage_password_fail.png" width="20%" style="margin-right: 10%;">
-    <img src="images/mypage_nickname_fail.png" width="20%" style="margin-right: 10%;">
-    <img src="images/mypage_nickname_success.png" width="20%">
+    <img src="images/mypage_password_fail.png" width="20%" style="display:inline-block; margin-right:10%;">
+    <img src="images/mypage_nickname_fail.png" width="20%" style="display:inline-block; margin-right:10%;">
+    <img src="images/mypage_nickname_success.png" width="20%" style="display:inline-block;">
 </p>
 
 #### 9-1-2. 회원가입 성공/실패
 
 <p align="center">
-    <img src="images/signup_success.png" width="30%" style="margin-right: 10%;">
-    <img src="images/signup_fail.png" width="30%">
+    <img src="images/signup_success.png" width="30%" style="display:inline-block; margin-right:10%;">
+    <img src="images/signup_fail.png" width="30%" style="display:inline-block;">
 </p>
 
 #### 9-1-3. 회원탈퇴
 
 <p align="center">
-    <img src="images/withdraw1.png" width="30%" style="margin-right: 10%;">
-    <img src="images/withdraw2.png" width="30%" style="margin-right: 10%;">
-    <img src="images/withdraw_success.png" width="30%">
+    <img src="images/withdraw1.png" width="30%" style="display:inline-block; margin-right:10%;">
+    <img src="images/withdraw2.png" width="30%" style="display:inline-block; margin-right:10%;">
+    <img src="images/withdraw_success.png" width="30%" style="display:inline-block;">
 </p>
 
-### 9-2. 시연 영상
+### 9-2. 시연 
+
+![시연 미리보기](images/demo.gif) 
 
 ## 10. 한 줄 회고
 | 이름 | 회고 |
