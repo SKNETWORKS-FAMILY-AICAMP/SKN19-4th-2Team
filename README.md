@@ -340,13 +340,42 @@
 
 ### 9-1. 페이지 테스트 결과
 
-#### 9-1-1. 로그인 성공/실패
+#### 9-1-1. 로그인 실패
 
-<p align="center">
-    <img src="images/login.png" width="50%" style="display: inline-block; margin-right: 4%;">
-    <img src="images/login_fail.png" width="50%" style="display: inline-block;">
-</p>
+<div style="display: flex; justify-content: center; align-items: center;">
+    <img src="images/login_fail.png" width="30%">
+</div>
 
+#### 9-1-2. 마이페이지 정보 수정 성공/실패
 
+<div style="display: flex; justify-content: center; align-items: center;">
+    <img src="images/mypage_password_fail.png" width="20%" style="margin-right: 4%;">
+    <img src="images/mypage_nickname_fail.png" width="20%">
+    <img src="images/mypage_nickname_success.png" width="20%">
+</div>
+
+#### 9-1-2. 회원가입 성공/실패
+
+<div style="display: flex; justify-content: center; align-items: center;">
+    <img src="images/signup_success.png" width="30%" style="margin-right: 4%;">
+    <img src="images/signup_fail.png" width="30%">
+</div>
+
+#### 9-1-3. 회원탈퇴
+
+<div style="display: flex; justify-content: center; align-items: center;">
+    <img src="images/withdraw1.png" width="30%" style="margin-right: 4%;">
+    <img src="images/withdraw2.png" width="30%">
+    <img src="images/withdraw_success.png" width="30%">
+</div>
+
+### 9-2. 시연 영상
 
 ## 10. 한 줄 회고
+| 이름 | 회고 |
+|:---:|:------:|
+| 박도연 ||
+| 신지섭 ||
+| 왕혁준 ||
+| 임상민 ||
+| 장효정 ||
