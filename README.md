@@ -1,7 +1,7 @@
 # 💻 AI 기반 컴퓨터 비전 관련 특허 질의응답 시스템
 
 <p align="center">
-    <img src="images/logo.png" alt="Pai 로고" width="20%">
+    <img src="images/logo.png" alt="Pai 로고" width="30%">
 </p>
 
 ## 1. 팀 소개
@@ -136,7 +136,7 @@
 │  ├─ 📁_pai
 │  │   ├─ __init__.py   
 │  │   ├─ asgi.py
-│  │   ├─ settings.py             # Django 프로젝트 설정
+│  │   ├─ settings.py              # Django 프로젝트 설정
 │  │   ├─ urls.py      
 │  │   └─ wsgi.py
 │  │
@@ -221,6 +221,10 @@
 ## 6. 화면설계서 (문서 캡처본)
 
 ## 7. WBS
+
+<p align="center">
+    <img src="images/wbs.jpg" alt="WBS" width="80%">
+</p>
 
 ## 8. 테스트 계획 및 결과 보고서 (문서 캡처본)
 
