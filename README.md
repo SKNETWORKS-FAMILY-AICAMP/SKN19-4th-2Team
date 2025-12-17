@@ -379,7 +379,7 @@
 
 ### 9-3. 트러블 슈팅
 
-[4차 단위 프로젝트 트러블 슈팅](https://www.notion.so/2cc893cda13b80fcb476f01d1af2af77)
+[🚀 4차 단위 프로젝트 트러블 슈팅](https://www.notion.so/2cc893cda13b80fcb476f01d1af2af77)
 
 ## 10. 한 줄 회고
 | 이름 | 회고 |
