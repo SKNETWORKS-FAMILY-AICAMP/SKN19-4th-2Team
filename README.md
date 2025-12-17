@@ -356,9 +356,7 @@
 #### 9-1-2. 마이페이지 정보 수정 성공/실패
 
 <p align="center">
-    <img src="images/mypage_password_fail.png" width="20%" style="display:inline-block; margin-right:10%;">
-    <img src="images/mypage_nickname_fail.png" width="20%" style="display:inline-block; margin-right:10%;">
-    <img src="images/mypage_nickname_success.png" width="20%" style="display:inline-block;">
+    <img src="images/mypage.png" width="75%" 
 </p>
 
 #### 9-1-2. 회원가입 실패
@@ -370,8 +368,7 @@
 #### 9-1-3. 회원탈퇴
 
 <p align="center">
-    <img src="images/withdraw2.png" width="30%" style="display:inline-block; margin-right:10%;">
-    <img src="images/withdraw_success.png" width="30%" style="display:inline-block;">
+    <img src="images/withdraw.png">
 </p>
 
 ### 9-2. 시연 
